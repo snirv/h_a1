@@ -90,19 +90,15 @@ int main(int argc, char *argv[]){
             }
         }
        else if ( (c =='+') || (c =='-')|| (c == '*') || (c == '/') ||( c == 'p'  ) || (c == 'q' )){
-         if ((c =='+')){
+         if (((c !='p') && (c != 'q')){
              if( (0 != counter) ){
-                 copy_and_push(&counter, acc, stack);
+                copy_and_push(&counter, acc, stack);
                 bignum* num1 = pop(stack);  
                 bignum* num2 = pop(stack);
-                char op = '+';
+                char op = c;
                 calc(stack, num1,num2,op);
-                 
              }
         }
-            else if ((c =='-')){}
-            else if ((c =='*')){}
-            else if ((c =='/')){}
             else if ((c =='p')){
                    if (0 != counter){
                     copy_and_push(&counter, acc, stack);
@@ -115,7 +111,7 @@ int main(int argc, char *argv[]){
 //                     printStack(stack);
                 
             }
-            else if (c == 'p'){
+            else if (c == 'q'){
                 exit(0);
             }
             
@@ -150,6 +146,18 @@ void copy_and_push(int* counter, char* acc, struct Stack* stack){
 void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     break_into_chuncks(num1);
     break_into_chuncks(num2);
+    switch(op){
+        case '+':
+
+            break;
+        case '-':
+             break;
+        case '*':
+              break;
+        case '/':
+             break;
+
+    }
     
 }
 
