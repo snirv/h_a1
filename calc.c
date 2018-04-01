@@ -3,6 +3,11 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
+
+extern fanc_add;
+extern fanc_sub;
+extern fanc_mul;
+extern fanc_div;
  
  typedef struct bignum {
     long number_of_digits;
@@ -73,7 +78,8 @@ void copy_and_push(int* counter, char* acc, struct Stack* stack);
 void print_array(bignum* bignum);
 
 int main(int argc, char *argv[]){
-    char c;
+    printf("that's is working samaq");
+	char c;
     struct Stack* stack = createStack(1024);
     FILE * input = stdin;
     char* acc = (char*)malloc(sizeof(char));
@@ -90,13 +96,13 @@ int main(int argc, char *argv[]){
             }
         }
        else if ( (c =='+') || (c =='-')|| (c == '*') || (c == '/') ||( c == 'p'  ) || (c == 'q' )){
-         if (((c !='p') && (c != 'q')){
+         if ((c !='p') && (c != 'q')){
              if( (0 != counter) ){
                 copy_and_push(&counter, acc, stack);
                 bignum* num1 = pop(stack);  
                 bignum* num2 = pop(stack);
                 char op = c;
-                calc(stack, num1,num2,op);
+                //calc(stack, num1,num2,op);
              }
         }
             else if ((c =='p')){
@@ -105,6 +111,7 @@ int main(int argc, char *argv[]){
                     }
                     bignum* new_peek = peek(stack);
                     printf("%s\n",new_peek->digit);
+					
                   //  break_into_chuncks(new_peek);
                     //print_array(new_peek);
 //                     printf("print stack: \n");
@@ -117,8 +124,6 @@ int main(int argc, char *argv[]){
             
         }
     }
-    
- 
     return 0;
 } 
 
@@ -148,7 +153,7 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     break_into_chuncks(num2);
     switch(op){
         case '+':
-
+			
             break;
         case '-':
              break;
