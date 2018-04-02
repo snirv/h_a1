@@ -171,18 +171,19 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
             digit = (char*)malloc((sizeof(char)));
             digit_tmp = (char*)malloc((sizeof(char)));
          for(int i = 0 ; i < bigger_num_array_size ; i++){
-            int ans = add_func(num1->array[i],num2->array[i] , carry);
+            int ans = add_func(num1->array[i] , num2->array[i] , carry);
             if(ans >= pow(10,8)){
                 ans = ans - pow(10,8);
                 carry = 1;
             }else{carry = 0;}
-            int ans_num_of_digits = get_num_of_digits(ans);
-            total_num_of_digits =+ ans_num_of_digits;
-            digit_tmp = (char*)realloc(digit_tmp ,(ans_num_of_digits)*(sizeof(char)));
+            ans_num_of_digits = get_num_of_digits(ans);
+            total_num_of_digits = total_num_of_digits + ans_num_of_digits;
+            digit_tmp = (char*)realloc(digit_tmp ,(total_num_of_digits)*(sizeof(char)));
             digit = (char*)realloc(digit ,(total_num_of_digits)*(sizeof(char)));
             sprintf(digit_tmp, "%d", ans);
             strcat(digit_tmp,digit);
             strcpy(digit,digit_tmp);
+            strcpy(digit_tmp,"");
             }
              //res = createBignum(digit , total_num_of_digits);
              res->digit = digit;
