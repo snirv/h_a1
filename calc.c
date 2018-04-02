@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
- 
+ #include <math.h>
+
  typedef struct bignum {
     long number_of_digits;
     char *digit;
@@ -71,6 +72,10 @@ bignum* peek(struct Stack* stack){
 void printStack(struct Stack* stack);
 void copy_and_push(int* counter, char* acc, struct Stack* stack);
 void print_array(bignum* bignum);
+void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op);
+void break_into_chuncks(bignum* bignum);
+int asm_add_func(int num1 ,int num2);
+int get_num_of_digits(int num);
 
 int main(int argc, char *argv[]){
     char c;
@@ -90,7 +95,7 @@ int main(int argc, char *argv[]){
             }
         }
        else if ( (c =='+') || (c =='-')|| (c == '*') || (c == '/') ||( c == 'p'  ) || (c == 'q' )){
-         if (((c !='p') && (c != 'q')){
+         if (( (c !='p') && (c != 'q') )){
              if( (0 != counter) ){
                 copy_and_push(&counter, acc, stack);
                 bignum* num1 = pop(stack);  
@@ -99,7 +104,7 @@ int main(int argc, char *argv[]){
                 calc(stack, num1,num2,op);
              }
         }
-            else if ((c =='p')){
+            else if (c =='p'){
                    if (0 != counter){
                     copy_and_push(&counter, acc, stack);
                     }
@@ -109,7 +114,6 @@ int main(int argc, char *argv[]){
                     //print_array(new_peek);
 //                     printf("print stack: \n");
 //                     printStack(stack);
-                
             }
             else if (c == 'q'){
                 exit(0);
@@ -146,9 +150,19 @@ void copy_and_push(int* counter, char* acc, struct Stack* stack){
 void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     break_into_chuncks(num1);
     break_into_chuncks(num2);
+    int bigger_num_array_size = num1->array_size;
+    if(num1->array_size < num2->array_size){
+        bigger_num_array_size = num2->array_size;
+    }
+    bignum* res;
     switch(op){
         case '+':
-
+        for(int i = 0 ; i < bigger_num_array_size ; i++){
+            int ans = asm_add_func(num1->array[i],num2->array[i]);
+            if(ans >= pow(10,8)){
+                
+            }
+        }
             break;
         case '-':
              break;
@@ -174,7 +188,7 @@ void break_into_chuncks(bignum* bignum){
           acc[counter] = bignum->digit[i]; 
           counter --;
         }
-        if(counter == -1){
+        if(counter == (-1)){
             counter = 7 ;
              res = atol(acc);
               bignum->array_size ++;
@@ -198,25 +212,21 @@ void break_into_chuncks(bignum* bignum){
 }
 
 
-/*
-    if ((!strcmp(c,"+"))){
-              bignum* new_num1 = pop(stack);  
-              bignum* new_num2 = pop(stack);
-              long num1 = atol(new_num1->digit);
-              long num2 = atol(new_num2->digit);
-              long new_num_res = num1+num2;
-             
-              char* new_num_res_char = (char*) malloc(256);
-              sprintf(new_num_res_char, "%ld", new_num_res);
-              
-              struct bignum* bignum_new = createBignum(new_num_res_char,strlen(new_num_res_char));
-              push (stack,bignum_new );
-            }*/
-
 void print_array(bignum* bignum){
     for(int i = 0; i < (bignum->array_size) ; i++){
         printf("array in %d , is:  %d " , i , bignum->array[i]); 
     }
     
+}
+
+
+
+int get_num_of_digits(int num){
+ int counter = 0;
+ while(num !=0){
+     num = (num/10);
+     counter++;
+}
+return counter;
 }
 
