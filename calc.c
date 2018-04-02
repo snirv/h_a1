@@ -47,23 +47,23 @@ struct Stack* createStack(unsigned capacity){
     stack->array = (bignum**) malloc(sizeof(bignum*)*1024);
     return stack;
 }
- 
+
 // Stack is full when top is equal to the last index
-int isFull(struct Stack* stack){ 
+int isFull(struct Stack* stack){
     return stack->top == stack->capacity - 1; }
- 
+
 // Stack is empty when top is equal to -1
 int isEmpty(struct Stack* stack)
 {   return stack->top == -1;  }
- 
+
 // Function to add an item to stack.  It increases top by 1
 void push(struct Stack* stack, bignum* item){
     if (isFull(stack))
         return;
     stack->array[++stack->top] = item;
-    
+
 }
- 
+
 // Function to remove an item from stack.  It decreases top by 1
 bignum* pop(struct Stack* stack){
 
@@ -103,14 +103,14 @@ int main(int argc, char *argv[]){
         }
        else if ( (c =='+') || (c =='-')|| (c == '*') || (c == '/') ||( c == 'p'  ) || (c == 'q' )){
          if (( (c !='p') && (c != 'q') )){
-             if( (0 != counter) ){
+             if(0 != counter ){
                 copy_and_push(&counter, acc, stack);
-                bignum* num1 = pop(stack);  
+                bignum* num1 = pop(stack);
                 bignum* num2 = pop(stack);
                 char op = c;
                 calc(stack, num1,num2,op);
-             }
-        }
+              }
+          }
             else if (c =='p'){
                    if (0 != counter){
                     copy_and_push(&counter, acc, stack);
@@ -125,13 +125,13 @@ int main(int argc, char *argv[]){
             else if (c == 'q'){
                 exit(0);
             }
-            
+
         }
     }
-    
- 
+
+
     return 0;
-} 
+}
 
 
 
@@ -148,10 +148,10 @@ void copy_and_push(int* counter, char* acc, struct Stack* stack){
                     digits[i] = acc[i];
                 }
                 int size =  strlen(digits);
-                struct bignum* next_num = createBignum(digits,size); 
+                struct bignum* next_num = createBignum(digits,size);
                 push(stack, next_num);
                 *counter = 0;
-    
+
 }
 
 void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
@@ -163,7 +163,7 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
         bigger_num_array_size = num2->array_size;
 		bigger=2;
     }
-    bignum* res = createBignum("" , 0);  
+    bignum* res = createBignum("" , 0);
     int carry = 0;
     int ans_num_of_digits = 0;
     int total_num_of_digits = 0;
@@ -171,6 +171,7 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     char* digit_tmp;
     switch(op){
 		case '+':
+
                 digit = (char*)malloc((sizeof(char)));
                 digit_tmp = (char*)malloc((sizeof(char)));
 			if (bigger ==1){add_zero(num2, bigger_num_array_size);}
@@ -196,7 +197,7 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
              res->number_of_digits = total_num_of_digits;
              push(stack, res);
              break;
-
+             
         case '-':
         break;
         case '*':
@@ -205,10 +206,10 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
         break;
 
          }
-       
 
-    
-    
+
+
+
 }
 
 void break_into_chuncks(bignum* bignum){
@@ -220,7 +221,7 @@ void break_into_chuncks(bignum* bignum){
     int place_in_array = 0;
     for(int i=(num_of_digits-1); i>=0;i--){
         if((counter <= 7) ){
-          acc[counter] = bignum->digit[i]; 
+          acc[counter] = bignum->digit[i];
           counter --;
         }
         if(counter == (-1)){
@@ -229,8 +230,8 @@ void break_into_chuncks(bignum* bignum){
               bignum->array_size ++;
             bignum->array = realloc(bignum->array, (bignum->array_size)*sizeof(long));
             (bignum->array[place_in_array++] ) = res;
-            
-            
+
+
         }
         if ( i == 0){
            for(int i=0; i<8;i++){last_acc[i]='0';}
@@ -241,15 +242,15 @@ void break_into_chuncks(bignum* bignum){
               bignum->array_size ++;
               bignum->array =  realloc(bignum->array, (bignum->array_size)*sizeof(long));
             (bignum->array[place_in_array++] ) = res;
-            
+
         }
     }
 }
 
 void print_array(bignum* bignum){
     for(int i = 0; i < (bignum->array_size) ; i++){
-        printf("array in %d , is:  %d " , i , bignum->array[i]); 
-    } 
+        printf("array in %d , is:  %d " , i , bignum->array[i]);
+    }
 }
 
 int get_num_of_digits(int num){
@@ -257,9 +258,9 @@ int get_num_of_digits(int num){
  while(num !=0){
      num = (num/10);
      counter++;
-}
-return counter;
-}
+  }
+ return counter;
+  }
 
 void add_zero(bignum* target, int  to_be_array_size){
                 target->array = (long*)realloc(target->array,(to_be_array_size+1)*sizeof(long)); 
