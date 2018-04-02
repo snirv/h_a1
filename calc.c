@@ -161,7 +161,7 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
         bigger_num_array_size = num2->array_size;
     }
     bignum* res = createBignum("" , 0);  
-      int carry = 0;
+    int carry = 0;
     int ans_num_of_digits = 0;
     int total_num_of_digits = 0;
     char* digit;
@@ -177,14 +177,17 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
                 carry = 1;
             }else{carry = 0;}
             int ans_num_of_digits = get_num_of_digits(ans);
-            digit = (char*)realloc(digit ,(ans_num_of_digits)*(sizeof(char)));
+            total_num_of_digits =+ ans_num_of_digits;
             digit_tmp = (char*)realloc(digit_tmp ,(ans_num_of_digits)*(sizeof(char)));
+            digit = (char*)realloc(digit ,(total_num_of_digits)*(sizeof(char)));
             sprintf(digit_tmp, "%d", ans);
-            
+            strcat(digit,digit_tmp);
             }
-        //res = createBignum(digit , total_num_of_digits);
-        push(stack, res);
-        break;
+             //res = createBignum(digit , total_num_of_digits);
+             res->digit = digit;
+             res->number_of_digits = total_num_of_digits;
+             push(stack, res);
+             break;
 
         case '-':
         break;
