@@ -184,16 +184,19 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
             }
         //res = createBignum(digit , total_num_of_digits);
         push(stack, res);
-            
-            break;
-        case '-':
-             break;
-        case '*':
-              break;
-        case '/':
-             break;
+        break;
 
-    }
+        case '-':
+        break;
+        case '*':
+        break;
+        case '/':
+        break;
+
+         }
+       
+
+    
     
 }
 
