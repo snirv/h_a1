@@ -164,10 +164,16 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     switch(op){
         case '+':
         for(int i = 0 ; i < bigger_num_array_size ; i++){
-            int ans = asm_add_func(num1->array[i],num2->array[i]);
+            int ans = add_func(num1->array[i],num2->array[i] , 0);
             if(ans >= pow(10,8)){
-                
+                ans = ans - pow(10,8);
             }
+            int ans_num_of_digits = get_num_of_digits(ans);
+            char* digits[ans_num_of_digits];
+            sprintf(digits, "%d", ans);
+            res = createBignum(digits , ans_num_of_digits);
+            push(stack, res);
+            
         }
             break;
         case '-':
@@ -203,12 +209,12 @@ void break_into_chuncks(bignum* bignum){
             
             
         }
-        if ( i== 0){
+        if ( i == 0){
            for(int i=0; i<8;i++){last_acc[i]='0';}
             for (int i=(counter+1);i<=7;i++){
                 last_acc[i]=acc[i];
             }
-             res = atol(last_acc);
+              res = atol(last_acc);
               bignum->array_size ++;
               bignum->array =  realloc(bignum->array, (bignum->array_size)*sizeof(long));
             (bignum->array[place_in_array++] ) = res;

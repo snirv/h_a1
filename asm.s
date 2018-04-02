@@ -46,7 +46,7 @@ mul_func:							; functions are defined as labels
 		push    rbp              	; save Base Pointer (bp) original value
         mov     rbp, rsp         	; use base pointer to access stack contents
 		
-		mul rdi, rsi
+		;mul rdi, rsi
 		
         mov     rax,rdi		; return an (returned values are in rax)
         mov     rsp, rbp
@@ -61,7 +61,7 @@ div_func:							; functions are defined as labels
 		push    rbp              	; save Base Pointer (bp) original value
         mov     rbp, rsp         	; use base pointer to access stack contents
 		
-		div rdi, rsi
+		;div rdi, rsi
 		
         mov     rax,rdi		; return an (returned values are in rax)
         mov     rsp, rbp
