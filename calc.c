@@ -18,10 +18,8 @@ extern fanc_div;
     int array_size;
 } bignum;
 
-
 // A structure to represent a stack
-struct Stack
-{
+struct Stack{
     int top;
     unsigned capacity;
     bignum** array;
@@ -91,25 +89,24 @@ int main(int argc, char *argv[]){
     char* acc = (char*)malloc(sizeof(char));
     int counter = 0;
     while((c = fgetc(input)) != EOF){
-        if( (48<= c) &&  (c<=57) ){
+        if((48<= c)&&(c<=57)){
         counter++;
         acc = (char*)realloc(acc, counter*sizeof(char));
         acc[counter-1] = c ;
         }
-        else if(c <= 32){
+        if(c <= 32){
             if (0 != counter){
-            copy_and_push(&counter, acc, stack);
+              copy_and_push(&counter, acc, stack);
             }
         }
-       else if ( (c =='+') || (c =='-')|| (c == '*') || (c == '/') ||( c == 'p'  ) || (c == 'q' )){
-         if (( (c !='p') && (c != 'q') )){
-             if(0 != counter ){
-                copy_and_push(&counter, acc, stack);
+        if ((c =='+')||(c =='-')||(c =='*')||(c=='/')||(c =='p')||(c == 'q')){
+         if ((c !='p') && (c != 'q')){
+             if(0!= counter){
+                copy_and_push(&counter, acc, stack);}
                 bignum* num1 = pop(stack);
                 bignum* num2 = pop(stack);
                 char op = c;
                 calc(stack, num1,num2,op);
-              }
           }
             else if (c =='p'){
                    if (0 != counter){
@@ -128,8 +125,6 @@ int main(int argc, char *argv[]){
 
         }
     }
-
-
     return 0;
 }
 
