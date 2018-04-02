@@ -161,20 +161,23 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
         bigger_num_array_size = num2->array_size;
     }
     bignum* res;
+    int carry = 0;
     switch(op){
         case '+':
         for(int i = 0 ; i < bigger_num_array_size ; i++){
-            int ans = add_func(num1->array[i],num2->array[i] , 0);
+            int ans = add_func(num1->array[i],num2->array[i] , carry);
             if(ans >= pow(10,8)){
                 ans = ans - pow(10,8);
-            }
+                carry = 1;
+            }else{carry = 0);
             int ans_num_of_digits = get_num_of_digits(ans);
-            char* digits[ans_num_of_digits];
-            sprintf(digits, "%d", ans);
-            res = createBignum(digits , ans_num_of_digits);
-            push(stack, res);
+            char* digit = (char*)malloc((ans_num_of_digits)*(sizeof(char)));
+            sprintf(digit, "%d", ans);
             
-        }
+            }
+        res = createBignum(digit , ans_num_of_digits);
+        push(stack, res);
+            
             break;
         case '-':
              break;
