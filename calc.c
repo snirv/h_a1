@@ -82,6 +82,7 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op);
 void break_into_chuncks(bignum* bignum);
 int asm_add_func(int num1 ,int num2);
 int get_num_of_digits(int num);
+void add_zero(bignum* target, int  to_be_array_size);
 
 int main(int argc, char *argv[]){
     char c;
@@ -169,8 +170,8 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     char* digit_tmp;
     switch(op){
 		case '+':
-            digit = (char*)malloc((sizeof(char)));
-            digit_tmp = (char*)malloc((sizeof(char)));
+                digit = (char*)malloc((sizeof(char)));
+                digit_tmp = (char*)malloc((sizeof(char)));
 			if (bigger ==1){add_zero(num2, bigger_num_array_size);}
 			else{add_zero(num1, bigger_num_array_size);}
 			for(int i = 0 ; i < bigger_num_array_size ; i++){
