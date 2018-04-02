@@ -183,13 +183,13 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
 					carry = 1;
 				}else{carry = 0;}
 				 ans_num_of_digits = get_num_of_digits(ans);
-                                total_num_of_digits = total_num_of_digits + ans_num_of_digits;
-                                digit_tmp = (char*)realloc(digit_tmp ,(2*total_num_of_digits)*(sizeof(char)));
-                                digit = (char*)realloc(digit ,(2*total_num_of_digits)*(sizeof(char)));
-                                sprintf(digit_tmp, "%d", ans);
-                                strcat(digit_tmp,digit);
-                                strcpy(digit,digit_tmp);
-                                strcpy(digit_tmp,"");
+          total_num_of_digits = total_num_of_digits + ans_num_of_digits;
+          digit_tmp = (char*)realloc(digit_tmp ,(2*total_num_of_digits)*(sizeof(char)));
+          digit = (char*)realloc(digit ,(2*total_num_of_digits)*(sizeof(char)));
+          sprintf(digit_tmp, "%d", ans);
+          strcat(digit_tmp,digit);
+          strcpy(digit,digit_tmp);
+          strcpy(digit_tmp,"");
 				}
 
              //res = createBignum(digit , total_num_of_digits);
@@ -197,7 +197,7 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
              res->number_of_digits = total_num_of_digits;
              push(stack, res);
              break;
-             
+
         case '-':
         break;
         case '*':
@@ -263,7 +263,7 @@ int get_num_of_digits(int num){
   }
 
 void add_zero(bignum* target, int  to_be_array_size){
-                target->array = (long*)realloc(target->array,(to_be_array_size+1)*sizeof(long)); 
+                target->array = (long*)realloc(target->array,(to_be_array_size+1)*sizeof(long));
 		for (int i = (target->array_size); i < to_be_array_size ; i++){
 		target->array[i] = 0;
 		(target-> array_size)++;
