@@ -143,7 +143,7 @@ void printStack(struct Stack* stack){
 }
 
 void copy_and_push(int* counter, char* acc, struct Stack* stack){
-                char* digits = (char*)malloc((*counter)*(sizeof(char)));
+                char* digits = (char*)malloc((*counter+1)*(sizeof(char)));
                 for(int i = 0; i < (*counter) ;i++){
                     digits[i] = acc[i];
                 }
@@ -183,8 +183,8 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
 				}else{carry = 0;}
 				 ans_num_of_digits = get_num_of_digits(ans);
                                 total_num_of_digits = total_num_of_digits + ans_num_of_digits;
-                                digit_tmp = (char*)realloc(digit_tmp ,(1+total_num_of_digits)*(sizeof(char)));
-                                digit = (char*)realloc(digit ,(1+total_num_of_digits)*(sizeof(char)));
+                                digit_tmp = (char*)realloc(digit_tmp ,(2*total_num_of_digits)*(sizeof(char)));
+                                digit = (char*)realloc(digit ,(2*total_num_of_digits)*(sizeof(char)));
                                 sprintf(digit_tmp, "%d", ans);
                                 strcat(digit_tmp,digit);
                                 strcpy(digit,digit_tmp);
@@ -213,8 +213,8 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
 
 void break_into_chuncks(bignum* bignum){
     int counter =7 ;
-    char* acc = (char*)malloc( 8*sizeof(char));
-    char* last_acc = (char*)malloc( 8*sizeof(char));
+    char* acc = (char*)malloc(9*sizeof(char));
+    char* last_acc = (char*)malloc(9*sizeof(char));
     int num_of_digits = bignum->number_of_digits;
     unsigned int res;
     int place_in_array = 0;
@@ -262,7 +262,8 @@ return counter;
 }
 
 void add_zero(bignum* target, int  to_be_array_size){
-		for (int i = (target->array_size); i< to_be_array_size; i++){
+                target->array = (long*)realloc(target->array,(to_be_array_size+1)*sizeof(long)); 
+		for (int i = (target->array_size); i < to_be_array_size ; i++){
 		target->array[i] = 0;
 		(target-> array_size)++;
 		}
