@@ -182,6 +182,7 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
             digit = (char*)realloc(digit ,(total_num_of_digits)*(sizeof(char)));
             sprintf(digit_tmp, "%d", ans);
             strcat(digit,digit_tmp);
+            free(digit_tmp);
             }
              //res = createBignum(digit , total_num_of_digits);
              res->digit = digit;
