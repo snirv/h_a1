@@ -147,7 +147,8 @@ void copy_and_push(int* counter, char* acc, struct Stack* stack){
                 for(int i = 0; i < (*counter) ;i++){
                     digits[i] = acc[i];
                 }
-                struct bignum* next_num = createBignum(digits, strlen(digits)); 
+                int size =  strlen(digits);
+                struct bignum* next_num = createBignum(digits,size); 
                 push(stack, next_num);
                 *counter = 0;
     
@@ -182,8 +183,8 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
 				}else{carry = 0;}
 				 ans_num_of_digits = get_num_of_digits(ans);
                                 total_num_of_digits = total_num_of_digits + ans_num_of_digits;
-                                digit_tmp = (char*)realloc(digit_tmp ,(total_num_of_digits)*(sizeof(char)));
-                                digit = (char*)realloc(digit ,(total_num_of_digits)*(sizeof(char)));
+                                digit_tmp = (char*)realloc(digit_tmp ,(1+total_num_of_digits)*(sizeof(char)));
+                                digit = (char*)realloc(digit ,(1+total_num_of_digits)*(sizeof(char)));
                                 sprintf(digit_tmp, "%d", ans);
                                 strcat(digit_tmp,digit);
                                 strcpy(digit,digit_tmp);
