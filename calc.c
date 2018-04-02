@@ -93,7 +93,7 @@ int main(int argc, char *argv[]){
     while((c = fgetc(input)) != EOF){
         if( (48<= c) &&  (c<=57) ){
         counter++;
-        acc = (char*)realloc(acc, counter*sizeof(char));
+        acc = (char*)realloc(acc, (2*counter)*sizeof(char));
         acc[counter-1] = c ;
         }
         else if(c <= 32){
@@ -143,10 +143,11 @@ void printStack(struct Stack* stack){
 }
 
 void copy_and_push(int* counter, char* acc, struct Stack* stack){
-                char* digits = (char*)malloc((*counter+1)*(sizeof(char)));
-                for(int i = 0; i < (*counter) ;i++){
-                    digits[i] = acc[i];
-                }
+                char* digits = (char*)malloc((*counter*2)*(sizeof(char)));
+//                 for(int i = 0; i < (*counter) ;i++){
+//                     digits[i] = acc[i];
+//                 }
+                strcpy(digits, acc);
                 int size =  strlen(digits);
                 struct bignum* next_num = createBignum(digits,size);
                 push(stack, next_num);
