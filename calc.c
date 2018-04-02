@@ -164,10 +164,12 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
       int carry = 0;
     int ans_num_of_digits = 0;
     int total_num_of_digits = 0;
+    char* digit;
+    char* digit_tmp;
     switch(op){
         case '+':
-        char* digit = (char*)malloc((sizeof(char)));
-        char* digit_tmp = (char*)malloc((sizeof(char)));
+            digit = (char*)malloc((sizeof(char)));
+            digit_tmp = (char*)malloc((sizeof(char)));
          for(int i = 0 ; i < bigger_num_array_size ; i++){
             int ans = add_func(num1->array[i],num2->array[i] , carry);
             if(ans >= pow(10,8)){
@@ -175,8 +177,8 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
                 carry = 1;
             }else{carry = 0;}
             int ans_num_of_digits = get_num_of_digits(ans);
-            char* digit = (char*)realloc(digit ,(ans_num_of_digits)*(sizeof(char)));
-            char* digit_tmp = (char*)realloc(digit_tmp ,(ans_num_of_digits)*(sizeof(char)));
+            digit = (char*)realloc(digit ,(ans_num_of_digits)*(sizeof(char)));
+            digit_tmp = (char*)realloc(digit_tmp ,(ans_num_of_digits)*(sizeof(char)));
             sprintf(digit_tmp, "%d", ans);
             
             }
