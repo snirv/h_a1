@@ -1,9 +1,15 @@
+
 // C program for array implementation of stack
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
- #include <math.h>
+#include <math.h>
+
+extern fanc_add;
+extern fanc_sub;
+extern fanc_mul;
+extern fanc_div;
 
  typedef struct bignum {
     long number_of_digits;
