@@ -116,10 +116,10 @@ int main(int argc, char *argv[]){
                     }
                     bignum* new_peek = peek(stack);
                     printf("%s\n",new_peek->digit);
-                  //  break_into_chuncks(new_peek);
-                    //print_array(new_peek);
-//                     printf("print stack: \n");
-//                     printStack(stack);
+                    //break_into_chuncks(new_peek);
+                    print_array(new_peek);
+					printf("print stack: \n");
+					printStack(stack);
             }
             else if (c == 'q'){
                 exit(0);
@@ -141,7 +141,6 @@ void printStack(struct Stack* stack){
 }
 }
 
-
 void copy_and_push(int* counter, char* acc, struct Stack* stack){
                 char* digits = (char*)malloc((*counter)*(sizeof(char)));
                 for(int i = 0; i < (*counter) ;i++){
@@ -157,8 +156,10 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     break_into_chuncks(num1);
     break_into_chuncks(num2);
     int bigger_num_array_size = num1->array_size;
+	int bigger=1;
     if(num1->array_size < num2->array_size){
         bigger_num_array_size = num2->array_size;
+		bigger=2;
     }
     bignum* res = createBignum("" , 0);  
     int carry = 0;
@@ -167,24 +168,27 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     char* digit;
     char* digit_tmp;
     switch(op){
-        case '+':
+		case '+':
             digit = (char*)malloc((sizeof(char)));
             digit_tmp = (char*)malloc((sizeof(char)));
-         for(int i = 0 ; i < bigger_num_array_size ; i++){
-            int ans = add_func(num1->array[i] , num2->array[i] , carry);
-            if(ans >= pow(10,8)){
-                ans = ans - pow(10,8);
-                carry = 1;
-            }else{carry = 0;}
-            ans_num_of_digits = get_num_of_digits(ans);
-            total_num_of_digits = total_num_of_digits + ans_num_of_digits;
-            digit_tmp = (char*)realloc(digit_tmp ,(total_num_of_digits)*(sizeof(char)));
-            digit = (char*)realloc(digit ,(total_num_of_digits)*(sizeof(char)));
-            sprintf(digit_tmp, "%d", ans);
-            strcat(digit_tmp,digit);
-            strcpy(digit,digit_tmp);
-            strcpy(digit_tmp,"");
-            }
+			if (bigger ==1){add_zero(num2, bigger_num_array_size);}
+			else{add_zero(num1, bigger_num_array_size);}
+			for(int i = 0 ; i < bigger_num_array_size ; i++){
+				int ans = add_func(num1->array[i],num2->array[i] , carry);
+				if(ans >= pow(10,8)){
+					ans = ans - pow(10,8);
+					carry = 1;
+				}else{carry = 0;}
+				 ans_num_of_digits = get_num_of_digits(ans);
+                                total_num_of_digits = total_num_of_digits + ans_num_of_digits;
+                                digit_tmp = (char*)realloc(digit_tmp ,(total_num_of_digits)*(sizeof(char)));
+                                digit = (char*)realloc(digit ,(total_num_of_digits)*(sizeof(char)));
+                                sprintf(digit_tmp, "%d", ans);
+                                strcat(digit_tmp,digit);
+                                strcpy(digit,digit_tmp);
+                                strcpy(digit_tmp,"");
+				}
+
              //res = createBignum(digit , total_num_of_digits);
              res->digit = digit;
              res->number_of_digits = total_num_of_digits;
@@ -204,7 +208,6 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     
     
 }
-
 
 void break_into_chuncks(bignum* bignum){
     int counter =7 ;
@@ -241,15 +244,11 @@ void break_into_chuncks(bignum* bignum){
     }
 }
 
-
 void print_array(bignum* bignum){
     for(int i = 0; i < (bignum->array_size) ; i++){
         printf("array in %d , is:  %d " , i , bignum->array[i]); 
-    }
-    
+    } 
 }
-
-
 
 int get_num_of_digits(int num){
  int counter = 0;
@@ -260,3 +259,9 @@ int get_num_of_digits(int num){
 return counter;
 }
 
+void add_zero(bignum* target, int  to_be_array_size){
+		for (int i = (target->array_size); i< to_be_array_size; i++){
+		target->array[i] = 0;
+		(target-> array_size)++;
+		}
+}
