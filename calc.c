@@ -105,6 +105,7 @@ int main(int argc, char *argv[]){
         if(c <= 32){
             if (0 != counter){
               copy_and_push(&counter, acc, stack);
+              counter = 0;
             }
         }
         if ((c =='+')||(c =='-')||(c =='*')||(c=='/')||(c =='p')||(c == 'q')){
@@ -172,7 +173,7 @@ void copy_and_push(int* counter, char* acc, struct Stack* stack){
 void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     int is_num1_negative = fix_negative(num1);
     int is_num2_negative = fix_negative(num2);
-    int big= bigger_digits(num1,num2);
+    int big = bigger_digits(num1,num2);
     break_into_chuncks(num1);
     break_into_chuncks(num2);
     if (big == 1){add_zero(num2, num1->array_size);}
@@ -181,10 +182,10 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     switch(op){
 		    case '+':
             if ((!is_num1_negative) && (!is_num2_negative)){
-              res= interrior_add(num1,num2);
+              res = interrior_add(num1,num2);
             }
             if (is_num1_negative && is_num2_negative){
-              res= interrior_add(num1,num2);
+              res = interrior_add(num1,num2);
               add_sign(res);
             }
             if (is_num1_negative || is_num2_negative){
@@ -319,13 +320,14 @@ bignum* interrior_add(bignum* big, bignum* small){ // gets 2 bignums after rappe
   int carry = 0;
   for(int i = 0 ; i < bigger_num_array_size ; i++){
       int ans = add_func(big->array[i],small->array[i] , carry);
-            if(ans >= pow(10,8)){ans = sub_func(ans, pow(10,8), 0);
-              carry = 1;
+            if(ans >= pow(10,8)){
+                ans = sub_func(ans, pow(10,8), 0);
+                carry = 1;
             }else{carry = 0;}
              ans_num_of_digits = get_num_of_digits(ans);
               total_num_of_digits = total_num_of_digits + ans_num_of_digits;
-              digit_tmp = (char*)realloc(digit_tmp ,(2*total_num_of_digits)*(sizeof(char)));
-              digit = (char*)realloc(digit ,(2*total_num_of_digits)*(sizeof(char)));
+              digit_tmp = (char*)realloc(digit_tmp ,(total_num_of_digits+1)*(sizeof(char)));
+              digit = (char*)realloc(digit ,(total_num_of_digits+1)*(sizeof(char)));
               sprintf(digit_tmp, "%d", ans);
               strcat(digit_tmp,digit);
               strcpy(digit,digit_tmp);
