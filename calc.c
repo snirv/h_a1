@@ -337,26 +337,52 @@ bignum* interrior_sub(bignum* big, bignum* small){ // gets 2 bignums after rappe
 bignum* interrior_add(bignum* big, bignum* small){ // gets 2 bignums after rappeding by zero and sign deletion
   int ans_num_of_digits = 0;
   int total_num_of_digits = 0;
+  int flag = 1;
   char* digit = (char*)malloc((sizeof(char)));
   char* digit_tmp = (char*)malloc((sizeof(char)));
-  strcpy(digit,"");
-  strcpy(digit_tmp,"");
+  digit[0] = 0;
+  digit_tmp[0] = 0;
   int bigger_num_array_size = big->array_size;
   int carry = 0;
   for(int i = 0 ; i < bigger_num_array_size ; i++){
+      flag = 1;
       int ans = add_func(big->array[i],small->array[i] , carry);
-            if(ans >= pow(10,8)){
+      printf("ans is before: %d\n",ans);
+            if(ans > pow(10,8)){
                 ans = sub_func(ans, pow(10,8), 0);
                 carry = 1;
-            }else{carry = 0;}
+            }else if(ans == pow(10,8)){
+                total_num_of_digits = total_num_of_digits + 8;
+                char str[total_num_of_digits+1];
+                for(int i = 0; i <= total_num_of_digits; i++){
+                    str[i] = 0;
+                }
+                strcpy(str,"00000000");
+                digit = (char*)realloc(digit ,(total_num_of_digits+1)*(sizeof(char)));
+                digit[total_num_of_digits] = 0;
+                carry = 1;
+                flag = 0;
+                strcat(str,digit);
+                strcpy(digit,str);
+            }
+            else{carry = 0;}
+            if(flag){
              ans_num_of_digits = get_num_of_digits(ans);
               total_num_of_digits = total_num_of_digits + ans_num_of_digits;
-              digit_tmp = (char*)realloc(digit_tmp ,(total_num_of_digits+1)*(sizeof(char)));
+              digit_tmp = (char*)realloc(digit_tmp ,(total_num_of_digits + 1)*(sizeof(char)));
               digit = (char*)realloc(digit ,(total_num_of_digits+1)*(sizeof(char)));
+              digit[total_num_of_digits] = 0;
+              digit_tmp[total_num_of_digits] = 0;
+              for(int i = 0; i < (total_num_of_digits + 1);i++ ){
+                  digit_tmp[i] = 0;
+              }
+              printf("i is: %d\n", i);
+              printf("ans is: %d\n",ans);
               sprintf(digit_tmp, "%d", ans);
               strcat(digit_tmp,digit);
               strcpy(digit,digit_tmp);
               strcpy(digit_tmp,"");
+            }
             }
            bignum* res = createBignum(digit, total_num_of_digits);
            free(digit_tmp);
