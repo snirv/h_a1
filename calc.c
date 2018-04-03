@@ -105,6 +105,7 @@ int main(int argc, char *argv[]){
         if(c <= 32){
             if (0 != counter){
               copy_and_push(&counter, acc, stack);
+              counter=0;
             }
         }
         if ((c =='+')||(c =='-')||(c =='*')||(c=='/')||(c =='p')||(c == 'q')){
@@ -129,10 +130,10 @@ int main(int argc, char *argv[]){
                     }
                     bignum* new_peek = peek(stack);
                     printf("%s\n",new_peek->digit);
-                    //break_into_chuncks(new_peek);
-                    //print_array(new_peek);
-					//printf("print stack: \n");
-					//printStack(stack);
+                    break_into_chuncks(new_peek);
+                    print_array(new_peek);
+					          //printf("print stack: \n");
+		                //printStack(stack);
             }
             else if (c == 'q'){
                 free_stack(stack);
@@ -175,8 +176,8 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     int big= bigger_digits(num1,num2);
     break_into_chuncks(num1);
     break_into_chuncks(num2);
-    if (big == 1){add_zero(num2, num1->array_size);}
-			else{add_zero(num1, num2->array_size);}
+    if (big == 1){add_zero(num2, (num1->array_size));}
+			else{add_zero(num1, (num2->array_size));}
     bignum* res;
     switch(op){
 		    case '+':
@@ -315,6 +316,7 @@ bignum* interrior_add(bignum* big, bignum* small){ // gets 2 bignums after rappe
   int total_num_of_digits = 0;
   char* digit = (char*)malloc((sizeof(char)));
   char* digit_tmp = (char*)malloc((sizeof(char)));
+  strcpy (digit_tmp,"\0");
   int bigger_num_array_size = big->array_size;
   int carry = 0;
   for(int i = 0 ; i < bigger_num_array_size ; i++){
