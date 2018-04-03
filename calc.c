@@ -98,16 +98,17 @@ int main(int argc, char *argv[]){
     int counter = 0;
     while((c = fgetc(input)) != EOF){
         if((48<= c)&&(c<=57)){
-        counter++;
-        acc = (char*)realloc(acc, (counter+1)*sizeof(char));
-        printf("counter is %d\n", counter);
-        printf("acc is: %s\n",acc);
-        acc[counter-1] = c ;
+            counter++;
+            acc = (char*)realloc(acc, (counter+1)*sizeof(char));
+            printf("counter is %d\n", counter);
+            printf("acc is: %s\n",acc);
+            strcat(acc,&c);
         }
         if(c <= 32){
             if (0 != counter){
               copy_and_push(&counter, acc, stack);
-              memset(acc,0,counter+2);
+              free (acc);
+              acc = (char*)malloc(sizeof(char));
               counter = 0;
             }
         }
@@ -115,7 +116,8 @@ int main(int argc, char *argv[]){
             if ((c !='p') && (c != 'q')){
                  if(0!= counter){
                  copy_and_push(&counter, acc, stack);
-                   memset(acc,0,counter+2);
+                 free (acc);
+                 acc = (char*)malloc(sizeof(char));
                     counter = 0;
               }
                 bignum* num1 = pop(stack);
@@ -134,14 +136,15 @@ int main(int argc, char *argv[]){
             else if (c =='p'){
                    if (0 != counter){
                        printf("push p: %s", acc);
-                    copy_and_push(&counter, acc, stack);
-                    memset(acc,0,counter+2);
-                    counter = 0;
+                       copy_and_push(&counter, acc, stack);
+                       free (acc);
+                       acc = (char*)malloc(sizeof(char));
+                       counter = 0;
                     }
                     bignum* new_peek = peek(stack);
                     printf("%s\n",new_peek->digit);
-                    break_into_chuncks(new_peek);
-                    print_array(new_peek);
+                    //break_into_chuncks(new_peek);
+                    //print_array(new_peek);
 					          //printf("print stack: \n");
 		                //printStack(stack);
             }
@@ -179,9 +182,16 @@ void copy_and_push(int* counter, char* acc, struct Stack* stack){
 void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     int is_num1_negative = fix_negative(num1);
     int is_num2_negative = fix_negative(num2);
+    printf("num1 is after negative fix %s\n",num1->digit);
+    printf("num2 is  after negative fix %s\n",num2->digit);
     int big = bigger_digits(num1,num2);
+    printf("big is: %d\n",big);
     break_into_chuncks(num1);
+      printf("print array num 1 \n");
+    print_array(num1);
     break_into_chuncks(num2);
+    printf("print array num 2 \n");
+    print_array(num2);
     if (big == 1){add_zero(num2, (num1->array_size));}
 			else{add_zero(num1, (num2->array_size));}
     bignum* res;
