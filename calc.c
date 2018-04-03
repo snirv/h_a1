@@ -101,8 +101,6 @@ int main(int argc, char *argv[]){
         if((48<= c)&&(c<=57)){
             counter++;
             acc = (char*)realloc(acc, (counter+1)*sizeof(char));
-            printf("counter is %d\n", counter);
-            printf("acc is: %s\n",acc);
             acc[counter -1] = c;
             acc[counter] = 0;
         }
@@ -192,11 +190,11 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     int big = bigger_digits(num1,num2);
     printf("big is: %d\n",big);
     break_into_chuncks(num1);
-      printf("print array num 1 \n");
-    print_array(num1);
+     // printf("print array num 1 \n");
+    //print_array(num1);
     break_into_chuncks(num2);
-    printf("print array num 2 \n");
-    print_array(num2);
+    //printf("print array num 2 \n");
+    //print_array(num2);
     if (big == 1){add_zero(num2, (num1->array_size));}
 			else{add_zero(num1, (num2->array_size));}
     bignum* res;
@@ -220,6 +218,8 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
              break;
 
         case '-':
+        
+
         break;
         case '*':
         break;
@@ -374,7 +374,7 @@ void add_sign (bignum* res){
 
 int fix_negative (bignum* num){
   int res = 0;
-  if ('-' ==(num->digit[0])){
+  if ('_' ==(num->digit[0])){//changed from '-' to '_'
     res=1;
     num->number_of_digits--;
     num->digit[0]='0';
