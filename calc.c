@@ -95,6 +95,7 @@ int main(int argc, char *argv[]){
     struct Stack* stack = createStack(1024);
     FILE * input = stdin;
     char* acc = (char*)malloc(sizeof(char));
+    acc[0] = 0;
     int counter = 0;
     while((c = fgetc(input)) != EOF){
         if((48<= c)&&(c<=57)){
@@ -102,13 +103,15 @@ int main(int argc, char *argv[]){
             acc = (char*)realloc(acc, (counter+1)*sizeof(char));
             printf("counter is %d\n", counter);
             printf("acc is: %s\n",acc);
-            strcat(acc,&c);
+            acc[counter -1] = c;
+            acc[counter] = 0;
         }
         if(c <= 32){
             if (0 != counter){
               copy_and_push(&counter, acc, stack);
-              free (acc);
-              acc = (char*)malloc(sizeof(char));
+            //   free (acc);
+            //   acc = (char*)malloc(sizeof(char));
+            memset(acc,0,counter + 1);
               counter = 0;
             }
         }
@@ -116,8 +119,9 @@ int main(int argc, char *argv[]){
             if ((c !='p') && (c != 'q')){
                  if(0!= counter){
                  copy_and_push(&counter, acc, stack);
-                 free (acc);
-                 acc = (char*)malloc(sizeof(char));
+                //  free (acc);
+                //  acc = (char*)malloc(sizeof(char));
+                memset(acc,0,counter + 1);
                     counter = 0;
               }
                 bignum* num1 = pop(stack);
@@ -137,8 +141,9 @@ int main(int argc, char *argv[]){
                    if (0 != counter){
                        printf("push p: %s", acc);
                        copy_and_push(&counter, acc, stack);
-                       free (acc);
-                       acc = (char*)malloc(sizeof(char));
+                    //    free (acc);
+                    //    acc = (char*)malloc(sizeof(char));
+                    memset(acc,0,counter + 1);
                        counter = 0;
                     }
                     bignum* new_peek = peek(stack);
@@ -229,6 +234,8 @@ void break_into_chuncks(bignum* bignum){
     int counter = 7 ;
     char* acc = (char*)malloc(9*sizeof(char));
     char* last_acc = (char*)malloc(9*sizeof(char));
+    acc[8] = 0;
+    last_acc[8] = 0;
     int num_of_digits = bignum->number_of_digits;
     unsigned int res;
     int place_in_array = 0;
@@ -239,8 +246,8 @@ void break_into_chuncks(bignum* bignum){
         }
         if(counter == (-1)){
             counter = 7 ;
-             res = atol(acc);
-              bignum->array_size ++;
+            res = atol(acc);
+            bignum->array_size ++;
             bignum->array = realloc(bignum->array, (bignum->array_size)*sizeof(long));
             (bignum->array[place_in_array++] ) = res;
 
@@ -380,12 +387,14 @@ int bigger_digits (bignum* num1, bignum* num2){
   if ((num2->number_of_digits)>(num1->number_of_digits)){ res =2;}
 
   if ((num2->number_of_digits)==(num1->number_of_digits)){
-    char* num1_pre = (char*)malloc(100);
+    char* num1_pre = (char*)malloc(3);
     num1_pre[0]=num1->digit[0];
     num1_pre[1]=num1->digit[1];
-    char* num2_pre = (char*)malloc(100);
+    num1_pre[2] = 0;
+    char* num2_pre = (char*)malloc(3);
     num2_pre[0]=num2->digit[0];
     num2_pre[1]=num2->digit[1];
+    num2_pre[2] = 0;
     int num1_pre_int= atoi(num1_pre);
     int num2_pre_int= atoi(num2_pre);
     if(num2_pre_int > num1_pre_int){res=2;}
