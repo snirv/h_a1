@@ -98,7 +98,7 @@ int main(int argc, char *argv[]){
     acc[0] = 0;
     int counter = 0;
     while((c = fgetc(input)) != EOF){
-        if(((48<= c)&&(c<=57))|| (c==95) ){
+        if((48<= c)&&(c<=57)){
             counter++;
             acc = (char*)realloc(acc, (counter+1)*sizeof(char));
             acc[counter -1] = c;
@@ -199,10 +199,9 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
               add_sign(res);
             }
             else {
-              if (big == 1){
-                res = interrior_sub(num1,num2);}
-              else {
-                res = interrior_sub(num2,num1);}
+              printf(" enter one of them is negative");
+              if (big == 1){res = interrior_sub(num1,num2);}
+              else {res = interrior_sub(num2,num1);}
               if ((is_num1_negative && (big==1)) || (is_num2_negative && (big ==2))){
                 add_sign(res);
               }
@@ -229,13 +228,11 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
                 add_sign(res);
               }
             }
-              else if (is_num2_negative && !(is_num1_negative)) {  // just one of them is negative  -7 +6
-                printf("enter here!!!!!!!!!!!!!!");
-              res = interrior_add(num2,num1);
-              add_sign(res);
-            }
-            else if (is_num1_negative && !(is_num2_negative)){
-                res = interrior_add(num2,num1);
+            else {  // just one of them is negative  -7 +6
+              res = interrior_add(num1,num2);
+              if (is_num2_negative){
+                add_sign(res);
+              }
             }
              push(stack, res);
              break;
@@ -393,6 +390,7 @@ bignum* interrior_add(bignum* big, bignum* small){ // gets 2 bignums after rappe
   for(int i = 0 ; i < bigger_num_array_size ; i++){
       flag = 1;
       int ans = add_func(big->array[i],small->array[i] , carry);
+      printf("\n enter add -- ans is before: %d\n",ans);
             if(ans > pow(10,8)){
                 ans = sub_func(ans, pow(10,8), 0);
                 carry = 1;
@@ -436,11 +434,13 @@ bignum* interrior_add(bignum* big, bignum* small){ // gets 2 bignums after rappe
 
 void add_sign (bignum* res){
   char* digit_tmp = (char*)malloc(2+(sizeof(res->digit)));
-  for(int i = 0; i < (2+(sizeof(res->digit))) ; i++ ){
+  for(int i = 0; i < (2+(sizeof(res->digit))) ; i++){
       digit_tmp[i] = 0;
   }  
   strcpy(digit_tmp,"_");
   strcat(digit_tmp,res->digit);
+  res->digit = (char*)realloc(res->digit , (2+(sizeof(res->digit))) );
+  res->digit[1+(sizeof(res->digit))] = 0;
   strcpy(res->digit,digit_tmp);
   free(digit_tmp);
   res->number_of_digits++;
