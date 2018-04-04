@@ -438,7 +438,7 @@ void add_sign (bignum* res){
   char* digit_tmp = (char*)malloc(2+(sizeof(res->digit)));
   for(int i = 0; i < (2+(sizeof(res->digit))) ; i++ ){
       digit_tmp[i] = 0;
-  }  
+  }
   strcpy(digit_tmp,"_");
   strcat(digit_tmp,res->digit);
   strcpy(res->digit,digit_tmp);
@@ -458,23 +458,27 @@ int fix_negative (bignum* num){
 
 int bigger_digits (bignum* num1, bignum* num2){
   int res =1;
-  if ((num2->number_of_digits)>(num1->number_of_digits)){ res =2;}
-
-  if ((num2->number_of_digits)==(num1->number_of_digits)){
-    char* num1_pre = (char*)malloc(3);
-    num1_pre[0]=num1->digit[0];
-    num1_pre[1]=num1->digit[1];
-    num1_pre[2] = 0;
-    char* num2_pre = (char*)malloc(3);
-    num2_pre[0]=num2->digit[0];
-    num2_pre[1]=num2->digit[1];
-    num2_pre[2] = 0;
-    int num1_pre_int= atoi(num1_pre);
-    int num2_pre_int= atoi(num2_pre);
-    if(num2_pre_int > num1_pre_int){res=2;}
-    free (num1_pre);
-    free(num2_pre);
+  int local_num1_num_of_digits = num1->number_of_digits;
+  int local_num2_num_of_digits= num2 ->number_of_digits;
+  int num1_index=0;
+  while ((num1->digit[num1_index]) == '0'){
+    num1_index++;
+    local_num1_num_of_digits--;
   }
+  int num2_index=0;
+  while ((num2->digit[num2num2_index])=='0'){
+    num2_index++;
+    local_num2_num_of_digits--;
+  }
+  if (local_num2_num_of_digits > local_num1_num_of_digits){
+    res =2;
+  }
+  else if(local_num2_num_of_digits == local_num1_num_of_digits){
+    if ((num2->digit[num2_index])> (num1->digit[num1_index]){
+      res=2;
+    }
+  }
+
   return res;
 
 
