@@ -185,16 +185,14 @@ void copy_and_push(int* counter, char* acc, struct Stack* stack){
 void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     int is_num1_negative = fix_negative(num1);
     int is_num2_negative = fix_negative(num2);
+    printf("is num 1 is egative  %d\n",is_num1_negative);
+    printf("is num 2 is egative  %d\n",is_num2_negative);
     printf("num1 is after negative fix %s\n",num1->digit);
     printf("num2 is  after negative fix %s\n",num2->digit);
     int big = bigger_digits(num1,num2);
     printf("big is: %d\n",big);
     break_into_chuncks(num1);
-     // printf("print array num 1 \n");
-    //print_array(num1);
     break_into_chuncks(num2);
-    //printf("print array num 2 \n");
-    //print_array(num2);
     if (big == 1){add_zero(num2, (num1->array_size));}
 			else{add_zero(num1, (num2->array_size));}
     bignum* res;
@@ -203,11 +201,11 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
             if ((!is_num1_negative) && (!is_num2_negative)){
               res = interrior_add(num1,num2);
             }
-            if (is_num1_negative && is_num2_negative){
+            else if (is_num1_negative && is_num2_negative){
               res = interrior_add(num1,num2);
               add_sign(res);
             }
-            if (is_num1_negative || is_num2_negative){
+            else {
               if (big == 1){res = interrior_sub(num1,num2);}
               else {res = interrior_sub(num2,num1);}
               if ((is_num1_negative && (big==1)) || (is_num2_negative && (big ==2))){
@@ -218,9 +216,33 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
              break;
 
         case '-':
-        
+            if ((!is_num1_negative) && (!is_num2_negative)){
+                if (big == 1){
+                  res = interrior_sub(num1,num2);
+                  add_sign(res);
+                }
+                else {
+                  res = interrior_sub(num2,num1);
+                }
+            }
 
-        break;
+            else if (is_num1_negative && is_num2_negative){
+              if (big == 1){
+                  res = interrior_sub(num1,num2);
+                }
+              else {
+                res = interrior_sub(num2,num1);
+                add_sign(res);
+              }
+            }
+            else {  // just one of them is negative  -7 -6
+              res = interrior_add(num1,num2);
+              if (is_num2_negative){
+                add_sign(res);
+              }
+            }
+             push(stack, res);
+             break;
         case '*':
         break;
         case '/':
@@ -292,7 +314,6 @@ void add_zero(bignum* target, int  to_be_array_size){
 		}
 }
 
-
 void free_stack(struct Stack* stack){
     while(!isEmpty(stack)){
         bignum* num = pop(stack);
@@ -306,33 +327,61 @@ void free_stack(struct Stack* stack){
 bignum* interrior_sub(bignum* big, bignum* small){ // gets 2 bignums after rappeding by zero and sign deletion
   int ans_num_of_digits = 0;
   int total_num_of_digits = 0;
+  int flag = 1;
   char* digit = (char*)malloc((sizeof(char)));
   char* digit_tmp = (char*)malloc((sizeof(char)));
+  digit[0] = 0;
+  digit_tmp[0] = 0;
   int bigger_num_array_size = big->array_size;
   int carry = 0;
   for(int i = 0 ; i < bigger_num_array_size ; i++){
-      int ans = sub_func(big->array[i],small->array[i] , carry);
+      flag = 1;
+      printf("big array in 0 is    %d\n", big->array[i]);
+      printf("big array in 0 is    %d\n", big->array[i]);
+      int ans = (big->array[i])-(small->array[i]) - carry;
+      //int ans = sub_func(big->array[i],small->array[i] , carry);
+      printf("\n  enter sub  1 ans is before: %d\n",ans);
             if(ans < 0){
-              int to_add = pow(10,8);
-              ans = add_func(ans ,to_add, 0);
-              carry = 1;
+                printf("\n  enter sub 2 ans is before: %d\n",ans);
+                ans = add_func(ans, pow(10,8), 0);
+                carry = 1;
+            }else if(ans == 0){
+                total_num_of_digits = total_num_of_digits + 8;
+                char str[total_num_of_digits+1];
+                for(int i = 0; i <= total_num_of_digits; i++){
+                    str[i] = 0;
+                }
+                strcpy(str,"00000000");
+                digit = (char*)realloc(digit ,(total_num_of_digits+1)*(sizeof(char)));
+                digit[total_num_of_digits] = 0;
+                carry = 1;
+                flag = 0;
+                strcat(str,digit);
+                strcpy(digit,str);
             }
-            else{
-              carry = 0;
-            }
+            else{carry = 0;}
+            if(flag){
              ans_num_of_digits = get_num_of_digits(ans);
               total_num_of_digits = total_num_of_digits + ans_num_of_digits;
-              digit_tmp = (char*)realloc(digit_tmp ,(total_num_of_digits+1)*(sizeof(char)));
+              digit_tmp = (char*)realloc(digit_tmp ,(total_num_of_digits + 1)*(sizeof(char)));
               digit = (char*)realloc(digit ,(total_num_of_digits+1)*(sizeof(char)));
+              digit[total_num_of_digits] = 0;
+              digit_tmp[total_num_of_digits] = 0;
+              for(int i = 0; i < (total_num_of_digits + 1);i++ ){
+                  digit_tmp[i] = 0;
+              }
+              printf("i is: %d\n", i);
+              printf("ans is: %d\n",ans);
               sprintf(digit_tmp, "%d", ans);
               strcat(digit_tmp,digit);
               strcpy(digit,digit_tmp);
               strcpy(digit_tmp,"");
             }
-            bignum* res = createBignum(digit, total_num_of_digits);
+            }
+           bignum* res = createBignum(digit, total_num_of_digits);
            free(digit_tmp);
            return res;
-}
+  }
 
 bignum* interrior_add(bignum* big, bignum* small){ // gets 2 bignums after rappeding by zero and sign deletion
   int ans_num_of_digits = 0;
@@ -347,7 +396,7 @@ bignum* interrior_add(bignum* big, bignum* small){ // gets 2 bignums after rappe
   for(int i = 0 ; i < bigger_num_array_size ; i++){
       flag = 1;
       int ans = add_func(big->array[i],small->array[i] , carry);
-      printf("ans is before: %d\n",ans);
+      printf("\n enter add -- ans is before: %d\n",ans);
             if(ans > pow(10,8)){
                 ans = sub_func(ans, pow(10,8), 0);
                 carry = 1;
@@ -391,7 +440,7 @@ bignum* interrior_add(bignum* big, bignum* small){ // gets 2 bignums after rappe
 
 void add_sign (bignum* res){
   char* digit_tmp = (char*)malloc(4+(sizeof(res->digit)));
-  strcpy(digit_tmp,"-");
+  strcpy(digit_tmp,"_");
   strcat(digit_tmp,res->digit);
   strcpy(res->digit,digit_tmp);
   free(digit_tmp);
