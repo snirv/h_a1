@@ -117,8 +117,6 @@ int main(int argc, char *argv[]){
             if ((c !='p') && (c != 'q')){
                  if(0!= counter){
                  copy_and_push(&counter, acc, stack);
-                //  free (acc);
-                //  acc = (char*)malloc(sizeof(char));
                 memset(acc,0,counter + 1);
                     counter = 0;
               }
@@ -185,12 +183,7 @@ void copy_and_push(int* counter, char* acc, struct Stack* stack){
 void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
     int is_num1_negative = fix_negative(num1);
     int is_num2_negative = fix_negative(num2);
-    printf("is num 1 is egative  %d\n",is_num1_negative);
-    printf("is num 2 is egative  %d\n",is_num2_negative);
-    printf("num1 is after negative fix %s\n",num1->digit);
-    printf("num2 is  after negative fix %s\n",num2->digit);
     int big = bigger_digits(num1,num2);
-    printf("big is: %d\n",big);
     break_into_chuncks(num1);
     break_into_chuncks(num2);
     if (big == 1){add_zero(num2, (num1->array_size));}
@@ -206,6 +199,7 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
               add_sign(res);
             }
             else {
+              printf(" enter one of them is negative");
               if (big == 1){res = interrior_sub(num1,num2);}
               else {res = interrior_sub(num2,num1);}
               if ((is_num1_negative && (big==1)) || (is_num2_negative && (big ==2))){
@@ -225,8 +219,7 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
                   res = interrior_sub(num2,num1);
                 }
             }
-
-            else if (is_num1_negative && is_num2_negative){
+            else if ((is_num1_negative) && (is_num2_negative)){
               if (big == 1){
                   res = interrior_sub(num1,num2);
                 }
@@ -235,7 +228,7 @@ void calc(struct Stack* stack , bignum* num1 , bignum* num2 ,char op){
                 add_sign(res);
               }
             }
-            else {  // just one of them is negative  -7 -6
+            else {  // just one of them is negative  -7 +6
               res = interrior_add(num1,num2);
               if (is_num2_negative){
                 add_sign(res);
@@ -325,6 +318,7 @@ void free_stack(struct Stack* stack){
 }
 
 bignum* interrior_sub(bignum* big, bignum* small){ // gets 2 bignums after rappeding by zero and sign deletion
+  printf("small array in 0 is    %s\n", small->digit);
   int ans_num_of_digits = 0;
   int total_num_of_digits = 0;
   int flag = 1;
@@ -337,7 +331,7 @@ bignum* interrior_sub(bignum* big, bignum* small){ // gets 2 bignums after rappe
   for(int i = 0 ; i < bigger_num_array_size ; i++){
       flag = 1;
       printf("big array in 0 is    %d\n", big->array[i]);
-      printf("big array in 0 is    %d\n", big->array[i]);
+      printf("small array in 0 is    %d\n", small->array[i]);
       int ans = (big->array[i])-(small->array[i]) - carry;
       //int ans = sub_func(big->array[i],small->array[i] , carry);
       printf("\n  enter sub  1 ans is before: %d\n",ans);
