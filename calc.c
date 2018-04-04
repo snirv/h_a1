@@ -199,8 +199,9 @@ void copy_and_push(int* counter, char* acc, struct Stack* stack){
                       digits[i] = 0;
                   }
                   int j=0;
-                  for (int i=not_zero_index; i <len; i++){
+                  for (int i=not_zero_index; i < strlen(acc); i++){
                     digits[j]= acc[i];
+                    j++;
                   }
                   struct bignum* next_num = createBignum(digits,len);
                   if (minus_flag){
@@ -620,4 +621,6 @@ bignum *interrior_div(bignum *num1, bignum *num2, bignum *res, bignum *factor){
 }
 
 bignum *div_help(bignum *num1, bignum *num2, bignum *res, bignum *factor){
+
+
 }
