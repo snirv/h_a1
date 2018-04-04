@@ -204,6 +204,7 @@ void copy_and_push(int *counter, char *acc, struct Stack *stack)
 	*counter = 0;
 }
 
+
 void calc(struct Stack *stack, bignum *num1, bignum *num2, char op)
 {
 	int is_num1_negative = fix_negative(num1);
@@ -313,11 +314,14 @@ void calc(struct Stack *stack, bignum *num1, bignum *num2, char op)
 		}
 		push(stack, res);
 
+
+
 		break;
 	case '/':
 		break;
 	}
 }
+
 
 void break_into_chuncks(bignum *bignum)
 {
@@ -362,6 +366,7 @@ void break_into_chuncks(bignum *bignum)
 	}
 	free(acc);
 	free(last_acc);
+
 }
 
 void print_array(bignum *bignum)
@@ -570,6 +575,7 @@ int fix_negative(bignum *num)
 	return res;
 }
 
+
 int bigger_digits(bignum *num1, bignum *num2)
 {
 	int res = 1;
@@ -631,6 +637,9 @@ int is_equal_one(bignum* num)
 }
 
 
+
+
+  return res;
 
 bignum* dev_by_two(bignum* num){
 	int carry = 0;
