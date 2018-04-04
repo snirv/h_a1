@@ -433,7 +433,10 @@ bignum* interrior_add(bignum* big, bignum* small){ // gets 2 bignums after rappe
 }
 
 void add_sign (bignum* res){
-  char* digit_tmp = (char*)malloc(4+(sizeof(res->digit)));
+  char* digit_tmp = (char*)malloc(2+(sizeof(res->digit)));
+  for(int i = 0; i < (2+(sizeof(res->digit))) ; i++ ){
+      digit_tmp[i] = 0;
+  }  
   strcpy(digit_tmp,"_");
   strcat(digit_tmp,res->digit);
   strcpy(res->digit,digit_tmp);
