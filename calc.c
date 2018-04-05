@@ -102,6 +102,7 @@ bignum *dev_by_two(bignum *num);
 int is_odd(bignum *);
 bignum *interrior_div(bignum *num1, bignum *num2, bignum *res, bignum *factor);
 bignum *div_help(bignum *num1, bignum *num2, bignum *res, bignum *factor);
+bignum* check_if_zero(bignum* target);
 
 int main(int argc, char *argv[]){
     char c;
@@ -246,6 +247,7 @@ void calc(struct Stack *stack, bignum *num1, bignum *num2, char op){
                 add_sign(res);
             }
         }
+        res= check_if_zero(res);
         push(stack, res);
         break;
 
@@ -275,6 +277,7 @@ void calc(struct Stack *stack, bignum *num1, bignum *num2, char op){
                 add_sign(res);
             }
         }
+        res = check_if_zero(res);
         push(stack, res);
         break;
     case '*':
@@ -376,127 +379,121 @@ void free_stack(struct Stack *stack){
 }
 
 bignum* interrior_sub(bignum* big, bignum* small){ // gets 2 bignums after rappeding by zero and sign deletion
+
   int ans_num_of_digits = 0;
   int total_num_of_digits = 0;
-  int flag = 1;
-  char* digit = (char*)malloc((sizeof(char)));
-  char* digit_tmp = (char*)malloc((sizeof(char)));
+  char *digit = (char *)malloc((sizeof(char)));
+  char *digit_tmp = (char *)malloc(9*(sizeof(char)));
   digit[0] = 0;
-  digit_tmp[0] = 0;
+  for (int i = 0; i < (9*(sizeof(char))); i++){digit_tmp[i] = 0;}
   int bigger_num_array_size = big->array_size;
-  int carry = 0;
-  for(int i = 0 ; i < bigger_num_array_size ; i++){
-      flag = 1;
-      //int ans = (big->array[i])-(small->array[i]) - carry;
-      int ans = sub_func(big->array[i],small->array[i] , carry);
-            if(ans < 0){
-                ans = add_func(ans, pow(10,8), 0);
-                carry = 1;
-            }else if(ans == 0){
-                total_num_of_digits = total_num_of_digits + 8;
-                char str[total_num_of_digits+1];
-                for(int i = 0; i <= total_num_of_digits; i++){
-                    str[i] = 0;
-                }
-                strcpy(str,"00000000");
-                digit = (char*)realloc(digit ,(total_num_of_digits+1)*(sizeof(char)));
-                digit[total_num_of_digits] = 0;
-                carry = 1;
-                flag = 0;
-                strcat(str,digit);
-                strcpy(digit,str);
-            }
-            else{carry = 0;}
-            if(flag){
-             ans_num_of_digits = get_num_of_digits(ans);
-              total_num_of_digits = total_num_of_digits + ans_num_of_digits;
-              digit_tmp = (char*)realloc(digit_tmp ,(total_num_of_digits + 1)*(sizeof(char)));
-              digit = (char*)realloc(digit ,(total_num_of_digits+1)*(sizeof(char)));
-              digit[total_num_of_digits] = 0;
-              digit_tmp[total_num_of_digits] = 0;
-              for(int i = 0; i < (total_num_of_digits + 1);i++ ){
-                  digit_tmp[i] = 0;
-              }
-              printf("i is: %d\n", i);
-              printf("ans is: %d\n",ans);
-              sprintf(digit_tmp, "%d", ans);
-              strcat(digit_tmp,digit);
-              strcpy(digit,digit_tmp);
-              strcpy(digit_tmp,"");
+  int borrow = 0;
+  for (int i = 0; i < bigger_num_array_size; i++){
+      int ans = sub_func(big->array[i], small->array[i], borrow);
+      if (ans <0){
+            ans = add_func(ans, pow(10, 8), 0);
+            borrow = 1;
         }
+      else{borrow =0;}
+      if (i+1 != bigger_num_array_size){
+            total_num_of_digits = total_num_of_digits + 8;
+            char *str = (char *)malloc( (total_num_of_digits + 1) * (sizeof(char)));
+            for (int i = 0; i < (total_num_of_digits+1); i++){str[i] = 0;}
+            ans_num_of_digits =get_num_of_digits(ans);
+            for (int i=0; i<(8-ans_num_of_digits);i++){str[i]='0';}
+            strcat(str,digit_tmp);
+            printf("str after concat a %s\n", str );
+            digit_tmp = (char *)realloc(digit_tmp,( (total_num_of_digits + 1) * (sizeof(char))));
+            strcpy(digit_tmp, str);
+            free(str);
+            printf("this is digit tmp         %s\n", digit_tmp );
+        }
+        else {total_num_of_digits = total_num_of_digits + get_num_of_digits(ans);}
+
+          if(ans!= 0){
+          char temp_str[22];
+          sprintf(temp_str, "%d", ans);
+          strcat(digit_tmp, temp_str);
+          }
+
+          digit_tmp = (char *)realloc(digit_tmp,( (total_num_of_digits + 1) * (sizeof(char))));
+          digit_tmp[total_num_of_digits]=0;
+          strcat(digit_tmp, digit);
+          digit = (char *)realloc(digit, (total_num_of_digits + 1) * (sizeof(char)));
+          digit[total_num_of_digits]=0;
+          strcpy(digit, digit_tmp);
+          strcpy(digit_tmp, "");
     }
+
+
     bignum *res = createBignum(digit, total_num_of_digits);
     free(digit_tmp);
     return res;
-}
+  }
 
 bignum *interrior_add(bignum *big, bignum *small){ // gets 2 bignums after rappeding by zero and sign deletion
-    int ans_num_of_digits = 0;
-    int total_num_of_digits = 0;
-    int flag = 1;
-    char *digit = (char *)malloc((sizeof(char)));
-    char *digit_tmp = (char *)malloc((sizeof(char)));
-    digit[0] = 0;
-    digit_tmp[0] = 0;
-    int bigger_num_array_size = big->array_size;
-    int carry = 0;
-    for (int i = 0; i < bigger_num_array_size; i++){
-        flag = 1;
-        int ans = add_func(big->array[i], small->array[i], carry);
-        printf("\n enter add -- ans is before: %d\n", ans);
-        if (ans > pow(10, 8)){
+  int ans_num_of_digits = 0;
+  int total_num_of_digits = 0;
+  char *digit = (char *)malloc((sizeof(char)));
+  char *digit_tmp = (char *)malloc(9*(sizeof(char)));
+  digit[0] = 0;
+  for (int i = 0; i < (9*(sizeof(char))); i++){digit_tmp[i] = 0;}
+  int bigger_num_array_size = big->array_size;
+  int carry = 0;
+  for (int i = 0; i < bigger_num_array_size; i++){
+      int ans = add_func(big->array[i], small->array[i], carry);
+      if (ans >= pow(10, 8)){
             ans = sub_func(ans, pow(10, 8), 0);
             carry = 1;
         }
-        else if (ans == pow(10, 8)){
+      else{carry =0;}
+      if (i+1 != bigger_num_array_size){
             total_num_of_digits = total_num_of_digits + 8;
-            char str[total_num_of_digits + 1];
-            for (int i = 0; i <= total_num_of_digits; i++){
-                str[i] = 0;
-            }
-            strcpy(str, "00000000");
-            digit = (char *)realloc(digit, (total_num_of_digits + 1) * (sizeof(char)));
-            digit[total_num_of_digits] = 0;
-            carry = 1;
-            flag = 0;
-            strcat(str, digit);
-            strcpy(digit, str);
+            char *str = (char *)malloc( (total_num_of_digits + 1) * (sizeof(char)));
+            for (int i = 0; i < (total_num_of_digits+1); i++){str[i] = 0;}
+            ans_num_of_digits =get_num_of_digits(ans);
+            for (int i=0; i<(8-ans_num_of_digits);i++){str[i]='0';}
+            strcat(str,digit_tmp);
+            printf("str after concat a %s\n", str );
+            digit_tmp = (char *)realloc(digit_tmp,( (total_num_of_digits + 1) * (sizeof(char))));
+            strcpy(digit_tmp, str);
+            free(str);
+            printf("this is digit tmp         %s\n", digit_tmp );
         }
-        else{
-            carry = 0;
-        }
-        if (flag){
-            ans_num_of_digits = get_num_of_digits(ans);
-            total_num_of_digits = total_num_of_digits + ans_num_of_digits;
-            digit_tmp = (char *)realloc(digit_tmp, (total_num_of_digits + 1) * (sizeof(char)));
-            digit = (char *)realloc(digit, (total_num_of_digits + 1) * (sizeof(char)));
-            digit[total_num_of_digits] = 0;
-            digit_tmp[total_num_of_digits] = 0;
-            for (int i = 0; i < (total_num_of_digits + 1); i++){
-                digit_tmp[i] = 0;
-            }
-            printf("i is: %d\n", i);
-            printf("ans is: %d\n", ans);
-            sprintf(digit_tmp, "%d", ans);
-            strcat(digit_tmp, digit);
-            strcpy(digit, digit_tmp);
-            strcpy(digit_tmp, "");
-        }
+        else {total_num_of_digits = total_num_of_digits + get_num_of_digits(ans);}
+
+          if(ans!= 0){
+          char temp_str[22];
+          sprintf(temp_str, "%d", ans);
+          strcat(digit_tmp, temp_str);
+          }
+
+          digit_tmp = (char *)realloc(digit_tmp,( (total_num_of_digits + 1) * (sizeof(char))));
+          digit_tmp[total_num_of_digits]=0;
+          strcat(digit_tmp, digit);
+          digit = (char *)realloc(digit, (total_num_of_digits + 1) * (sizeof(char)));
+          digit[total_num_of_digits]=0;
+          strcpy(digit, digit_tmp);
+          strcpy(digit_tmp, "");
     }
+
+
     bignum *res = createBignum(digit, total_num_of_digits);
     free(digit_tmp);
     return res;
-}
+  }
+
+
+
 
 void add_sign(bignum *res){
-    char *digit_tmp = (char *)malloc(2 + (sizeof(res->digit)));
-    for (int i = 0; i < (2 + (sizeof(res->digit))); i++){
-        digit_tmp[i] = 0;
-    }
+  int len = strlen(res->digit);
+    char *digit_tmp = (char *)malloc((2 +len)*sizeof(char));
+    memset(digit_tmp,'\0',sizeof(digit_tmp));
     strcpy(digit_tmp, "_");
     strcat(digit_tmp, res->digit);
-    res->digit = (char *)realloc(res->digit, (2 + (sizeof(res->digit))));
-    res->digit[1 + (sizeof(res->digit))] = 0;
+    res->digit = (char *)realloc(res->digit, (3 + (sizeof(res->digit))));
+    res->digit[3 + (sizeof(res->digit))] = 0;
     strcpy(res->digit, digit_tmp);
     free(digit_tmp);
     res->number_of_digits++;
@@ -615,4 +612,29 @@ bignum *interrior_div(bignum *num1, bignum *num2, bignum *res, bignum *factor){
 bignum *div_help(bignum *num1, bignum *num2, bignum *res, bignum *factor){
 
 
+}
+
+bignum* check_if_zero(bignum* target) {
+  int is_zero=1;
+  int index=0;
+  int digit_len = target->number_of_digits;
+  if (target->digit[index]=='_'){
+    index++;
+   }
+  while ((index< digit_len)&& (is_zero) )
+    {
+    if ((target->digit[index])!= '0'){is_zero=0;}
+    index++;
+    }
+
+    if (is_zero){
+      char* digit = (char*) malloc(2*sizeof(char));
+      digit[0]='0';
+      digit[1]=0;
+        bignum *temp = createBignum(digit, 1);
+        free(target->digit);
+        free(target->array);
+        return temp;
+    }
+    return target;
 }
