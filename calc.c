@@ -238,18 +238,22 @@ bignum* calc(struct Stack *stack, bignum *num1, bignum *num2, char op, int to_pu
     case '+':
         if ((!is_num1_negative) && (!is_num2_negative)){
             res = interrior_add(num1, num2);
+              fix_zero(res);
         }
         else if (is_num1_negative && is_num2_negative){
             res = interrior_add(num1, num2);
+              fix_zero(res);
             add_sign(res);
         }
         else{
             printf(" enter one of them is negative");
             if (big == 1){
                 res = interrior_sub(num1, num2);
+                  fix_zero(res);
             }
             else{
                 res = interrior_sub(num2, num1);
+                  fix_zero(res);
             }
             if ((is_num1_negative && (big == 1)) || (is_num2_negative && (big == 2))){
                 add_sign(res);
@@ -267,23 +271,29 @@ bignum* calc(struct Stack *stack, bignum *num1, bignum *num2, char op, int to_pu
         if ((!is_num1_negative) && (!is_num2_negative)){
             if (big == 1){
                 res = interrior_sub(num1, num2);
+                fix_zero(res);
                 add_sign(res);
             }
             else{
                 res = interrior_sub(num2, num1);
+                fix_zero(res);
+
             }
         }
         else if ((is_num1_negative) && (is_num2_negative)){
             if (big == 1){
                 res = interrior_sub(num1, num2);
+                fix_zero(res);
             }
             else{
                 res = interrior_sub(num2, num1);
+                fix_zero(res);
                 add_sign(res);
             }
         }
         else{ // just one of them is negative  -7 +6
             res = interrior_add(num1, num2);
+              fix_zero(res);
             if (is_num2_negative)
             {
                 add_sign(res);
@@ -557,12 +567,12 @@ int bigger_digits (bignum* num1, bignum* num2){
   int local_num1_num_of_digits = num1->number_of_digits;
   int local_num2_num_of_digits= num2 ->number_of_digits;
   int num1_index=0;
-  while ((num1->digit[num1_index]) == '0'){
+  while (((num1->digit[num1_index]) == '0')||((num1->digit[num1_index]) == '_') ){
     num1_index++;
     local_num1_num_of_digits--;
   }
   int num2_index=0;
-  while ((num2->digit[num2_index])=='0'){
+  while (((num2->digit[num2_index])=='0')|| ((num2->digit[num2_index])=='_')){
     num2_index++;
     local_num2_num_of_digits--;
   }
@@ -570,15 +580,17 @@ int bigger_digits (bignum* num1, bignum* num2){
     res =2;
   }
   else if(local_num2_num_of_digits == local_num1_num_of_digits){
-    for (int i=0;(i<local_num1_num_of_digits) && (1==res); i++){
-      if ((num2->digit[num2_index])> (num1->digit[num1_index])){
-        res=2;
-      }
+    printf("same size!!!!!!!!!!!!!!!!");
+    int i=0;
+    res=0;
+    while ((i<local_num1_num_of_digits)&& (!res)){
+      if ((num2->digit[num2_index])> (num1->digit[num1_index])){res=2;}
+      else if ((num2->digit[num2_index]) < (num1->digit[num1_index])){res=1;}
       num2_index++;
       num1_index++;
+      i++;
     }
   }
-
   return res;
 
 }
@@ -663,8 +675,6 @@ bignum *interrior_div(bignum *num1, bignum *num2, bignum *res, bignum *factor){
 }
 
 bignum *div_help(bignum *num1, bignum *num2, bignum *res, bignum *factor){
-
-
 }
 
 
