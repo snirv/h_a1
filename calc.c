@@ -84,7 +84,7 @@ bignum *peek(struct Stack *stack)
 void printStack(struct Stack *stack);
 void copy_and_push(int *counter, char *acc, struct Stack *stack);
 void print_array(bignum *bignum);
-void calc(struct Stack *stack, bignum *num1, bignum *num2, char op);
+bignum* calc(struct Stack *stack, bignum *num1, bignum *num2, char op, int to_push ,int to_break );
 void break_into_chuncks(bignum *bignum);
 int get_num_of_digits(int num);
 void add_zero(bignum *target, int to_be_array_size);
@@ -98,10 +98,14 @@ int add_func(int num1, int num2, int carry);
 int sub_func(int num1, int num2, int borrow);
 bignum *interrior_mul(bignum *num1, bignum *num2, bignum *res);
 int is_equal_one(bignum *num);
-bignum *dev_by_two(bignum *num);
+void dev_by_two(bignum *num);
 int is_odd(bignum *);
 bignum *interrior_div(bignum *num1, bignum *num2, bignum *res, bignum *factor);
 bignum *div_help(bignum *num1, bignum *num2, bignum *res, bignum *factor);
+void copy_bignum_and_free(bignum* dst ,bignum* src);
+void fix_zero(bignum* num);
+
+
 
 int main(int argc, char *argv[]){
     char c;
@@ -138,7 +142,7 @@ int main(int argc, char *argv[]){
                 printf("num1 is %s\n", num1->digit);
                 printf("num2 is %s\n", num2->digit);
                 char op = c;
-                calc(stack, num1, num2, op);
+                calc(stack, num1, num2, op,1,1);
                 free(num1->array);
                 free(num2->array);
                 free(num1->digit);
@@ -212,12 +216,15 @@ void copy_and_push(int* counter, char* acc, struct Stack* stack){
 
 }
 
-void calc(struct Stack *stack, bignum *num1, bignum *num2, char op){
+bignum* calc(struct Stack *stack, bignum *num1, bignum *num2, char op, int to_push ,int to_break ){
     int is_num1_negative = fix_negative(num1);
     int is_num2_negative = fix_negative(num2);
     int big = bigger_digits(num1, num2);
-    break_into_chuncks(num1);
-    break_into_chuncks(num2);
+    if(to_break){
+        break_into_chuncks(num1);
+        break_into_chuncks(num2);
+    }
+    char* digit;
     if (big == 1){
         add_zero(num2, (num1->array_size));
     }
@@ -246,7 +253,9 @@ void calc(struct Stack *stack, bignum *num1, bignum *num2, char op){
                 add_sign(res);
             }
         }
-        push(stack, res);
+        if(to_push){
+            push(stack, res);
+        }
         break;
 
     case '-':
@@ -275,10 +284,16 @@ void calc(struct Stack *stack, bignum *num1, bignum *num2, char op){
                 add_sign(res);
             }
         }
-        push(stack, res);
+        if(to_push){
+            push(stack, res);
+        }
         break;
     case '*':
-        res = createBignum("0", 1);
+        digit = (char*)malloc(sizeof(char)+1);
+        digit[0] = '0'; 
+        digit[1] = 0;
+        res = createBignum(digit, 1);
+        break_into_chuncks(res);
         if (((!is_num1_negative) && (!is_num2_negative)) || ((is_num1_negative) && (is_num2_negative))){
             if (big == 1){
                 res = interrior_mul(num1, num2, res);
@@ -296,12 +311,14 @@ void calc(struct Stack *stack, bignum *num1, bignum *num2, char op){
             }
             add_sign(res);
         }
-        push(stack, res);
-
+        if(to_push){
+            push(stack, res);
+        }
         break;
     case '/':
         break;
     }
+    return res;
 }
 
 void break_into_chuncks(bignum *bignum){
@@ -560,23 +577,32 @@ int bigger_digits (bignum* num1, bignum* num2){
 }
 
 bignum *interrior_mul(bignum *num1, bignum *num2, bignum *res){ //num1 > num2 && both positive
-
-    printf("605 res char is: %s", res->digit);
+    printf("586 res char is: %s\n", res->digit);
+    fix_zero(num1);
+    if(res->number_of_digits != 1){fix_zero(res);}
     if (is_equal_one(num2)){
-        res = interrior_add(res, num1);
+        bignum* res_new = calc(0,res,num1,'+',0,0);
+        copy_bignum_and_free(res,res_new);
         return res;
     }
     if (is_odd(num2)){
-        res = interrior_add(res, num1);
+        printf("num2 is odd %s",num2->digit);
+        bignum* res_new = calc(0,res,num1,'+',0,0);
+        copy_bignum_and_free(res,res_new);
+
     }
-    num1 = interrior_add(num1, num1);
-    num2 = dev_by_two(num2);
+    bignum* num1_new = calc(0,num1,num1,'+',0,0);
+    copy_bignum_and_free(num1,num1_new);
+    dev_by_two(num2);
     res = interrior_mul(num1, num2, res);
     return res;
 }
 
 int is_equal_one(bignum *num){
-    if ((num->number_of_digits == 1) && (num->digit[0] == '1')){
+    printf("addres num is %x\n", num);
+    int num_of_digits = num->number_of_digits;
+    char first_char = num->digit[0];
+    if ((num_of_digits == 1) && (first_char == '1')){
         return 1;
     }
     else
@@ -585,7 +611,8 @@ int is_equal_one(bignum *num){
     }
 }
 
-bignum *dev_by_two(bignum *num){
+void dev_by_two(bignum *num){
+    printf("num before dv by two %s\n",num->digit);
     int carry = 0;
     for (int i = 0; i < num->number_of_digits; i++){
         int digit = (num->digit[i] - '0');
@@ -595,10 +622,16 @@ bignum *dev_by_two(bignum *num){
         num->digit[i] = new_char;
         carry = digit % 2;
     }
+    // if(num->digit[0] == '0'){
+    //     num->number_of_digits--;
+    //     num->digit++;//need to fix mem leak
+    // }
+    fix_zero(num);
+    printf("num after dv by two %s\n",num->digit);
 }
 
 int is_odd(bignum *num){
-    char c = num->digit[0];
+    char c = num->digit[num->number_of_digits-1];
     int x = c - '0';
     int mod = x % 2;
     if (mod == 0){
@@ -622,5 +655,57 @@ bignum *interrior_div(bignum *num1, bignum *num2, bignum *res, bignum *factor){
 
 bignum *div_help(bignum *num1, bignum *num2, bignum *res, bignum *factor){
 
+
+}
+
+
+void copy_bignum_and_free(bignum* dst ,bignum* src){
+    dst->digit = src->digit;
+    dst->number_of_digits = src->number_of_digits;
+    free(dst->array);
+    dst->array = (long *)malloc(sizeof(long));
+    dst->array_size = 0;
+    break_into_chuncks(dst);
+    free(src->array);
+    free(src);
+    
+
+}
+
+
+int str_cut(char *str, int begin, int len){
+    int l = strlen(str);
+
+    if (len < 0) len = l - begin;
+    if (begin + len > l) len = l - begin;
+    memmove(str + begin, str + begin + len, l - len + 1);
+
+    return len;
+}
+
+
+void fix_zero(bignum* num){
+                char* acc = num->digit;
+                int len = strlen(acc);
+                int not_zero_index=0;
+              
+                while (acc[not_zero_index]=='0'){
+                  not_zero_index++;
+                  len--;
+                }
+                  char* digits = (char*)malloc(len*sizeof(char)+1);
+                  for(int i = 0; i < (len+1) ; i++){
+                      digits[i] = 0;
+                  }
+                  int j=0;
+                  for (int i=not_zero_index; i < strlen(acc); i++){
+                    digits[j]= acc[i];
+                    j++;
+                  }
+                  num->digit = digits;
+                  num->number_of_digits = len;
+                  free(acc);
+                  
+                  
 
 }
