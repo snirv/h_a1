@@ -13,7 +13,7 @@ extern int func_div;
 
 typedef struct bignum
 {
-    long number_of_digits;
+  long long number_of_digits;
     char *digit;
     long *array;
     int array_size;
@@ -487,13 +487,16 @@ bignum *interrior_add(bignum *big, bignum *small){ // gets 2 bignums after rappe
 
 
 void add_sign(bignum *res){
-  int len = strlen(res->digit);
-    char *digit_tmp = (char *)malloc((2 +len)*sizeof(char));
-    memset(digit_tmp,'\0',sizeof(digit_tmp));
-    strcpy(digit_tmp, "_");
-    strcat(digit_tmp, res->digit);
-    res->digit = (char *)realloc(res->digit, (3 + (sizeof(res->digit))));
-    res->digit[3 + (sizeof(res->digit))] = 0;
+  long long len = res->number_of_digits;
+    char *digit_tmp = (char *)malloc((2+len)*sizeof(char));
+    for(int i=0; i< (len+2);i++){digit_tmp[i]=0;}
+    digit_tmp[0]='_';
+    for(int i=0; i<len;i++){
+      digit_tmp[i+1]=res->digit[i];
+    }
+    digit_tmp[len+1]=0;
+    res->digit = (char *)realloc(res->digit,(len+2) *sizeof(char));
+    res->digit[len+1] = 0;
     strcpy(res->digit, digit_tmp);
     free(digit_tmp);
     res->number_of_digits++;
@@ -519,7 +522,6 @@ int fix_negative (bignum* num){
   }
   return res;
 }
-
 
 int bigger_digits (bignum* num1, bignum* num2){
   int res =1;
