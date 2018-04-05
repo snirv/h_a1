@@ -105,6 +105,7 @@ bignum *div_help(bignum *num1, bignum *num2, bignum *res, bignum *factor);
 void copy_bignum_and_free(bignum* dst ,bignum* src);
 void fix_zero(bignum* num);
 bignum* check_if_zero(bignum* target);
+int check_if_zero_bool(bignum* target);
 
 
 
@@ -298,6 +299,10 @@ bignum* calc(struct Stack *stack, bignum *num1, bignum *num2, char op, int to_pu
         digit[0] = '0'; 
         digit[1] = 0;
         res = createBignum(digit, 1);
+        if(check_if_zero_bool(num1) || check_if_zero_bool(num2)){
+            push(stack,res);
+            return res;
+        }
         break_into_chuncks(res);
         if (((!is_num1_negative) && (!is_num2_negative)) || ((is_num1_negative) && (is_num2_negative))){
             if (big == 1){
@@ -718,4 +723,21 @@ bignum* check_if_zero(bignum* target) {
         return temp;
     }
     return target;
+}
+
+
+int check_if_zero_bool(bignum* target){
+  int is_zero=1;
+  int index=0;
+  int digit_len = target->number_of_digits;
+  if (target->digit[index]=='_'){
+    index++;
+   }
+  while ((index< digit_len)&& (is_zero) )
+    {
+    if ((target->digit[index])!= '0'){is_zero=0;}
+    index++;
+    }
+
+    return is_zero;
 }
