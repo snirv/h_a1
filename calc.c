@@ -387,9 +387,6 @@ bignum* calc(struct Stack *stack, bignum *num1, bignum *num2, char op, int to_pu
             res = check_if_zero(res);
             push(stack, res);
         }
-
-
-
         break;
     }
     return res;
@@ -738,40 +735,32 @@ bignum *interrior_div(bignum *num1, bignum *num2, bignum *res, bignum *factor){
 }
 
 bignum *div_help(bignum *num1, bignum *num2, bignum *res, bignum *factor){
-    printf("line: %d\n",__LINE__);
 printf("enter div_help res char is: %s\n", res->digit);
     printf("enter div_help factor char is: %s\n", factor->digit);
     printf("enter div_help num1 char is: %s\n", num1->digit);
     printf("enter div_help num2 char is: %s\n\n", num2->digit);
-   printf("line: %d\n",__LINE__);
+    
 if(bigger_digits(num1, num2) == 2){
-    printf("line: %d\n",__LINE__);
     dev_by_two(num2);
-    printf("line: %d\n",__LINE__);
     dev_by_two(factor);
-    printf("line: %d\n",__LINE__);
     return res;
 }
 bignum* factor_new = calc(0,factor,factor,'+',0,0);
 copy_bignum_and_free(factor,factor_new);
-printf("line: %d\n",__LINE__);
+
 bignum* num2_new = calc(0,num2,num2,'+',0,0);
 copy_bignum_and_free(num2,num2_new);
+
 div_help(num1, num2, res, factor);
-printf("line: %d\n",__LINE__);
+
 if (bigger_digits(num1, num2) == 1 || bigger_digits(num1, num2) == 0){
-printf("line: %d\n",__LINE__);
     bignum* num2_new = calc(0,num1,num2,'-',0,0);
     copy_bignum_and_free(num2,num2_new);
-printf("line: %d\n",__LINE__);
     bignum* res_new = calc(0,res,factor,'+',0,0);
     copy_bignum_and_free(res,res_new);
 }
-printf("line: %d\n",__LINE__);
 dev_by_two(num2);
-printf("line: %d\n",__LINE__);
 dev_by_two(factor);
-printf("line: %d\n",__LINE__);
 return res;
 
 }
