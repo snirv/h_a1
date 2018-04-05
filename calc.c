@@ -227,6 +227,8 @@ bignum* calc(struct Stack *stack, bignum *num1, bignum *num2, char op, int to_pu
         break_into_chuncks(num2);
     }
     char* digit;
+    char* digit_res;
+    char* digit_factor;
     if (big == 1){
         add_zero(num2, (num1->array_size));
     }
@@ -337,6 +339,46 @@ bignum* calc(struct Stack *stack, bignum *num1, bignum *num2, char op, int to_pu
         }
         break;
     case '/':
+
+        digit_res = (char*)malloc(sizeof(char)+1);
+        digit_res[0] = '0';
+        digit_res[1] = 0;
+        res = createBignum(digit_res, 1);
+        digit_factor = (char*)malloc(sizeof(char)+1);
+        digit_factor[0] = '1';
+        digit_factor[1] = 0;
+        bignum* factor = createBignum(digit_factor, 1);
+
+        if(check_if_zero_bool(num1) || check_if_zero_bool(num2)){///what to do if dev by zero?
+            push(stack,res);
+            return res;
+        }
+        break_into_chuncks(res);
+        break_into_chuncks(factor);
+        if (((!is_num1_negative) && (!is_num2_negative)) || ((is_num1_negative) && (is_num2_negative))){
+            if (big == 1){
+                res = interrior_div(num1, num2, res,factor);
+            }
+            else{
+                res = interrior_div(num2, num1, res,factor);
+            }
+        }
+        else{ // just one of them is negative  -7 +6
+            if (big == 1){
+                res = interrior_div(num1, num2, res,factor);
+            }
+            else{
+                res = interrior_div(num2, num1, res,factor);
+            }
+            add_sign(res);
+        }
+         if(to_push){
+            res = check_if_zero(res);
+            push(stack, res);
+        }
+
+
+
         break;
     }
     return res;
@@ -666,15 +708,42 @@ int is_odd(bignum *num){
 
 bignum *interrior_div(bignum *num1, bignum *num2, bignum *res, bignum *factor){
     div_help(num1, num2, res, factor);
-    if (bigger_digits(num1, num2) == 1)
-    {
-        num1 = interrior_sub(num1, num2);
-        res = interrior_add(res, factor);
+    if (bigger_digits(num1, num2) == 1 || bigger_digits(num1, num2) == 0){
+        bignum* num1_new = calc(0,num1,num2,'-',0,0);
+        copy_bignum_and_free(num1,num1_new);
+
+        bignum* res_new = calc(0,res,factor,'+',0,0);
+        copy_bignum_and_free(res,res_new);
     }
     return res;
 }
 
 bignum *div_help(bignum *num1, bignum *num2, bignum *res, bignum *factor){
+if(bigger_digits(num1, num2) == 2){
+    dev_by_two(num2);
+    dev_by_two(factor);
+    return res;
+}
+
+bignum* factor_new = calc(0,factor,factor,'+',0,0);
+copy_bignum_and_free(factor,factor_new);
+
+bignum* num2_new = calc(0,num2,num2,'+',0,0);
+copy_bignum_and_free(num2,num2_new);
+div_help(num1, num2, res, factor);
+
+if (bigger_digits(num1, num2) == 1 || bigger_digits(num1, num2) == 0){
+
+    bignum* num2_new = calc(0,num1,num2,'-',0,0);
+    copy_bignum_and_free(num2,num2_new);
+
+    bignum* res_new = calc(0,res,factor,'+',0,0);
+    copy_bignum_and_free(res,res_new);
+}
+dev_by_two(num2);
+dev_by_two(factor);
+return res;
+
 }
 
 
