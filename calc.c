@@ -117,6 +117,7 @@ void copy_bignum_and_free(bignum* dst ,bignum* src);
 void fix_zero(bignum* num);
 bignum* check_if_zero(bignum* target);
 int check_if_zero_bool(bignum* target);
+void break_into_chuncks_again(bignum* num);
 
 
 
@@ -143,8 +144,8 @@ int main(int argc, char *argv[]){
                 counter = 0;
             }
         }
-        if ((c == '+') || (c == '-') || (c == '*') || (c == '/') || (c == 'p') || (c == 'q')){
-            if ((c != 'p') && (c != 'q')){
+        if ((c == '+') || (c == '-') || (c == '*') || (c == '/') || (c == 'p') || (c == 'q')) {
+            if ((c != 'p') && (c != 'q')) {
                 if (0 != counter){
                     copy_and_push(&counter, acc, stack);
                     memset(acc, 0, counter + 1);
@@ -701,6 +702,7 @@ void dev_by_two(bignum *num){
         carry = digit % 2;
     }
     fix_zero(num);
+    break_into_chuncks_again(num);
     printf("num after dv by two %s\n",num->digit);
 }
 
@@ -739,10 +741,12 @@ printf("enter div_help res char is: %s\n", res->digit);
     printf("enter div_help factor char is: %s\n", factor->digit);
     printf("enter div_help num1 char is: %s\n", num1->digit);
     printf("enter div_help num2 char is: %s\n\n", num2->digit);
-    
+
 if(bigger_digits(num1, num2) == 2){
     dev_by_two(num2);
     dev_by_two(factor);
+    
+    
     return res;
 }
 bignum* factor_new = calc(0,factor,factor,'+',0,0);
@@ -754,13 +758,17 @@ copy_bignum_and_free(num2,num2_new);
 div_help(num1, num2, res, factor);
 
 if (bigger_digits(num1, num2) == 1 || bigger_digits(num1, num2) == 0){
-    bignum* num2_new = calc(0,num1,num2,'-',0,0);
-    copy_bignum_and_free(num2,num2_new);
+
+    bignum* num1_new = calc(0,num1,num2,'-',0,0);
+    copy_bignum_and_free(num1,num1_new);
+
     bignum* res_new = calc(0,res,factor,'+',0,0);
     copy_bignum_and_free(res,res_new);
 }
 dev_by_two(num2);
 dev_by_two(factor);
+
+
 return res;
 
 }
@@ -846,4 +854,13 @@ int check_if_zero_bool(bignum* target){
     }
 
     return is_zero;
+}
+
+
+void break_into_chuncks_again(bignum* num){
+    free(num->array);
+    num->array = (long *)malloc(sizeof(long));
+    num->array_size = 0;
+    break_into_chuncks(num);
+
 }
