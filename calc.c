@@ -217,6 +217,7 @@ void calc(struct Stack *stack, bignum *num1, bignum *num2, char op){
     int is_num1_negative = fix_negative(num1);
     int is_num2_negative = fix_negative(num2);
     int big = bigger_digits(num1, num2);
+    printf("aaaaaaaaaa              %d\n",big);
     break_into_chuncks(num1);
     break_into_chuncks(num2);
     if (big == 1){
@@ -389,8 +390,10 @@ bignum* interrior_sub(bignum* big, bignum* small){ // gets 2 bignums after rappe
   int bigger_num_array_size = big->array_size;
   int borrow = 0;
   for (int i = 0; i < bigger_num_array_size; i++){
+      printf("big in array is:    %d\n",big->array[i] );
       int ans = sub_func(big->array[i], small->array[i], borrow);
       if (ans <0){
+            printf("not suppose to enter");
             ans = add_func(ans, pow(10, 8), 0);
             borrow = 1;
         }
@@ -401,6 +404,8 @@ bignum* interrior_sub(bignum* big, bignum* small){ // gets 2 bignums after rappe
             for (int i = 0; i < (total_num_of_digits+1); i++){str[i] = 0;}
             ans_num_of_digits =get_num_of_digits(ans);
             for (int i=0; i<(8-ans_num_of_digits);i++){str[i]='0';}
+            printf("str after concat a %s\n", str );
+            printf("digit_tmp before concat a %s\n", digit_tmp );
             strcat(str,digit_tmp);
             printf("str after concat a %s\n", str );
             digit_tmp = (char *)realloc(digit_tmp,( (total_num_of_digits + 1) * (sizeof(char))));
@@ -541,8 +546,12 @@ int bigger_digits (bignum* num1, bignum* num2){
     res =2;
   }
   else if(local_num2_num_of_digits == local_num1_num_of_digits){
-    if ((num2->digit[num2_index])> (num1->digit[num1_index])){
-      res=2;
+    for (int i=0;(i<local_num1_num_of_digits) && (1==res); i++){
+      if ((num2->digit[num2_index])> (num1->digit[num1_index])){
+        res=2;
+      }
+      num2_index++;
+      num1_index++;
     }
   }
 
