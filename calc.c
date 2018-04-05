@@ -571,7 +571,9 @@ int bigger_digits (bignum* num1, bignum* num2){
 }
 
 bignum *interrior_mul(bignum *num1, bignum *num2, bignum *res){ //num1 > num2 && both positive
-    printf("586 res char is: %s\n", res->digit);
+    printf("enter mul res char is: %s\n", res->digit);
+    printf("enter mul num1 char is: %s\n", num1->digit);
+    printf("enter mul num2 char is: %s\n", num2->digit);
     fix_zero(num1);
     if(res->number_of_digits != 1){fix_zero(res);}
     if (is_equal_one(num2)){
@@ -580,7 +582,7 @@ bignum *interrior_mul(bignum *num1, bignum *num2, bignum *res){ //num1 > num2 &&
         return res;
     }
     if (is_odd(num2)){
-        printf("num2 is odd %s",num2->digit);
+        printf("num2 is odd %s\n",num2->digit);
         bignum* res_new = calc(0,res,num1,'+',0,0);
         copy_bignum_and_free(res,res_new);
 
@@ -592,8 +594,10 @@ bignum *interrior_mul(bignum *num1, bignum *num2, bignum *res){ //num1 > num2 &&
     return res;
 }
 
+
+
+
 int is_equal_one(bignum *num){
-    printf("addres num is %x\n", num);
     int num_of_digits = num->number_of_digits;
     char first_char = num->digit[0];
     if ((num_of_digits == 1) && (first_char == '1')){
@@ -604,6 +608,8 @@ int is_equal_one(bignum *num){
         return 0;
     }
 }
+
+
 
 void dev_by_two(bignum *num){
     printf("num before dv by two %s\n",num->digit);
@@ -616,10 +622,6 @@ void dev_by_two(bignum *num){
         num->digit[i] = new_char;
         carry = digit % 2;
     }
-    // if(num->digit[0] == '0'){
-    //     num->number_of_digits--;
-    //     num->digit++;//need to fix mem leak
-    // }
     fix_zero(num);
     printf("num after dv by two %s\n",num->digit);
 }
@@ -654,6 +656,7 @@ bignum *div_help(bignum *num1, bignum *num2, bignum *res, bignum *factor){
 
 
 void copy_bignum_and_free(bignum* dst ,bignum* src){
+    free(dst->digit);
     dst->digit = src->digit;
     dst->number_of_digits = src->number_of_digits;
     free(dst->array);
@@ -688,10 +691,10 @@ void fix_zero(bignum* num){
                   num->digit = digits;
                   num->number_of_digits = len;
                   free(acc);
-                  
-                  
+                                 
 
 }
+
 bignum* check_if_zero(bignum* target) {
   int is_zero=1;
   int index=0;
